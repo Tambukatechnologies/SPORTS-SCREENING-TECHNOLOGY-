@@ -155,3 +155,18 @@ searchBar.addEventListener('input', (e) => {
 
 // Draw the initial list onto the screen when the page finishes loading
 renderTable(playerDatabase);
+// Master Reset Switch to fix "ID Already Registered" error
+const clearDbBtn = document.getElementById('clearDbBtn');
+if (clearDbBtn) {
+  clearDbBtn.addEventListener('click', () => {
+    if (confirm("Are you sure you want to delete ALL players and completely reset the database? This cannot be undone.")) {
+      localStorage.removeItem('sportsRegistryPhotos'); // Wipes hidden browser memory
+      playerDatabase = [
+        { id: "STU-8821", name: "Alex Mukasa", school: "Kitante High School", yob: 2009, status: "Verified", photo: placeholderImg },
+        { id: "STU-4412", name: "Brian Okello", school: "St. Mary's College", yob: 2008, status: "Verified", photo: placeholderImg }
+      ]; // Restores fresh templates
+      updateInterface();
+      alert("Database wiped clean! You can now register fresh students using any ID.");
+    }
+  });
+}
