@@ -1,91 +1,80 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inter-School Sports Screening Platform</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-  <div class="container">
-    <header>
-      <h1>🏆 Inter-School Sports Screening Platform</h1>
-      <p>Verify player eligibility and prevent tournament fraud in real-time.</p>
-    </header>
-
-    <div class="grid">
-      <section class="card">
-        <h2>📋 Register New Athlete</h2>
-        <form id="registrationForm">
-          <div class="form-group">
-            <label>Full Name</label>
-            <input type="text" id="playerName" required placeholder="John Doe">
-          </div>
-          <div class="form-group">
-            <label>School Name</label>
-            <input type="text" id="playerSchool" required placeholder="Standard High School">
-          </div>
-          <div class="form-group">
-            <label>Student/National ID Number</label>
-            <input type="text" id="playerID" required placeholder="STU-10293">
-          </div>
-          <div class="form-group">
-            <label>Tournament Category</label>
-            <select id="tournamentCategory" required>
-              <option value="U15">Under-15 (Born 2011 or later)</option>
-              <option value="U17">Under-17 (Born 2009 or later)</option>
-              <option value="Unrestricted">Senior / Open Category</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Year of Birth</label>
-            <input type="number" id="playerYOB" min="2000" max="2026" required placeholder="2010">
-          </div>
-          <div class="form-group">
-            <label>Athlete Passport Photo</label>
-            <input type="file" id="playerPhoto" accept="image/*" required>
-          </div>
-          <button type="submit" class="btn btn-primary">Add to Official Register</button>
-        </form>
-      </section>
-
-      <section class="card screening-zone">
-        <h2>🔍 Matchday Screening Engine</h2>
-        <p>Type an ID or School to instantly audit player eligibility before kickoff.</p>
-        <input type="text" id="searchBar" placeholder="Search by Player ID, Name, or School...">
-        
-        <div id="screeningResult" class="result-box hidden">
-          </div>
-      </section>
+<div class="screen-wrapper">
+  <form class="registration-card" id="screeningForm">
+    <!-- Header -->
+    <div class="form-header">
+      <h2>Athlete Screening & Eligibility</h2>
+      <p>Complete the district verification profile to prevent age mismatches.</p>
     </div>
 
-    <section class="card table-card">
-      <section class="card table-card">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <h2 style="margin: 0;">🗂️ Master Tournament Registry</h2>
-        <button id="clearDbBtn" style="background-color: #e53e3e; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;">⚠️ Reset Entire Database</button>
+    <!-- Form Sections -->
+    <div class="form-body">
+      
+      <!-- Section 1: Player Details -->
+      <div class="form-section">
+        <label class="section-title">Player Details</label>
+        
+        <div class="input-group">
+          <label for="playerName">Full Name</label>
+          <input type="text" id="playerName" required placeholder="e.g., John Doe" />
+        </div>
+        
+        <div class="input-grid">
+          <div class="input-group">
+            <label for="playerDOB">Date of Birth</label>
+            <input type="date" id="playerDOB" required />
+          </div>
+          <div class="input-group">
+            <label for="schoolUnit">School / League Unit</label>
+            <input type="text" id="schoolUnit" required placeholder="e.g., Hillside Primary" />
+          </div>
+        </div>
       </div>
-      <div class="table-wrapper">
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Player ID</th>
-              <th>Name</th>
-              <th>School</th>
-              <th>YOB (Age Verification)</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="registryTableBody">
-            </tbody>
-        </table>
-      </div>
-    </section>
-  </div>
 
-  <script src="app.js"></script>
-</body>
-</html>
+      <hr class="section-divider" />
+
+      <!-- Section 2: Parent / Guardian Info -->
+      <div class="form-section">
+        <label class="section-title">Parent/Guardian Verification</label>
+        <div class="input-grid">
+          <div class="input-group">
+            <label for="guardianName">Guardian Name</label>
+            <input type="text" id="guardianName" required placeholder="e.g., Jane Doe" />
+          </div>
+          <div class="input-group">
+            <label for="guardianId">National ID / Passport Number</label>
+            <input type="text" id="guardianId" required placeholder="e.g., ID-993821-K" />
+          </div>
+        </div>
+      </div>
+
+      <hr class="section-divider" />
+
+      <!-- Section 3: Document Upload -->
+      <div class="form-section">
+        <label class="section-title">Eligibility Documentation</label>
+        <p class="section-subtitle">Upload a clear photo of the student's ID card or official birth certificate.</p>
+        
+        <div class="drop-zone" id="idDropZone">
+          <div class="drop-zone-prompt">
+            <span class="upload-icon">📸</span>
+            <p>Drag & drop Photo ID here or <span class="browse-link">click to browse</span></p>
+            <span class="file-limits">Accepted formats: JPG, PNG (Max 2MB)</span>
+          </div>
+          <input type="file" id="idFileInput" accept="image/jpeg, image/png" style="display: none;" />
+          <img src="" alt="ID Preview" class="id-preview-img" id="idPreview" style="display: none;" />
+        </div>
+        
+        <div class="actions-bar" id="actionsBar" style="display: none;">
+          <button type="button" class="btn-secondary" id="removeIdBtn">Remove Photo</button>
+          <span class="status-badge">Document Attached</span>
+        </div>
+      </div>
+      
+    </div>
+
+    <!-- Form Footer / Actions -->
+    <div class="form-footer">
+      <button type="submit" class="btn-primary">Verify & Register Athlete</button>
+    </div>
+  </form>
+</div>
