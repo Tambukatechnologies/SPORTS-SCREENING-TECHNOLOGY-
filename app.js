@@ -93,3 +93,56 @@ document.addEventListener("DOMContentLoaded", () => {
     alert(`Success! Profile for ${compiledSubmissionData.athleteName} is verified locally.`);
   });
 });
+document.addEventListener("DOMContentLoaded", () => {
+  const container = document.getElementById("athleteListContainer");
+  const totalCounter = document.getElementById("totalCount");
+  const emptyState = document.getElementById("emptyState");
+
+  // Mock Database Array representing submissions received across districts
+  const athleteRoster = [
+    {
+      id: "REG-01",
+      name: "Musa Baluku",
+      dob: "2013-05-12",
+      school: "Kampala Primary School",
+      docSnapshot: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%233b82f6'/><text x='50%25' y='50%25' font-size='12' fill='white' text-anchor='middle'>ID Photo</text></svg>"
+    },
+    {
+      id: "REG-02",
+      name: "Brian Okello",
+      dob: "2012-11-30",
+      school: "St. Jude Academy",
+      docSnapshot: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2310b981'/><text x='50%25' y='50%25' font-size='12' fill='white' text-anchor='middle'>ID Photo</text></svg>"
+    }
+  ];
+
+  function renderRoster() {
+    if (athleteRoster.length === 0) {
+      emptyState.style.display = "block";
+      totalCounter.textContent = "0";
+      return;
+    }
+
+    emptyState.style.display = "none";
+    totalCounter.textContent = athleteRoster.length;
+
+    athleteRoster.forEach(athlete => {
+      // Build row row shell
+      const row = document.createElement("div");
+      row.className = "athlete-row";
+
+      row.innerHTML = `
+        <img src="${athlete.docSnapshot}" alt="Thumbnail" class="thumb-preview" />
+        <div class="player-name">${athlete.name}</div>
+        <div>📅 DoB: ${athlete.dob}</div>
+        <div><span class="badge-unit">${athlete.school}</span></div>
+        <button type="button" class="view-doc-btn" onclick="alert('Viewing full asset payload for entry: ${athlete.id}')">Review ID</button>
+      `;
+
+      container.appendChild(row);
+    });
+  }
+
+  // Initial Execution
+  renderRoster();
+});
