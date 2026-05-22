@@ -1,172 +1,95 @@
-// Sample placeholder image to display if a default player doesn't have a photo uploaded yet
-const placeholderImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100%' height='100%' fill='%23cbd5e0'/><text x='50%' y='55%' font-family='sans-serif' font-size='12' fill='%234a5568' text-anchor='middle'>No Photo</text></svg>";
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("screeningForm");
+  const dropZone = document.getElementById("idDropZone");
+  const fileInput = document.getElementById("idFileInput");
+  const idPreview = document.getElementById("idPreview");
+  const promptText = dropZone.querySelector(".drop-zone-prompt");
+  const actionsBar = document.getElementById("actionsBar");
+  const removeBtn = document.getElementById("removeIdBtn");
 
-// Pre-loaded sample players to test the system immediately
-const defaultPlayers = [
-  { id: "STU-8821", name: "Alex Mukasa", school: "Kitante High School", yob: 2009, status: "Verified", photo: placeholderImg },
-  { id: "STU-4412", name: "Brian Okello", school: "St. Mary's College", yob: 2008, status: "Verified", photo: placeholderImg }
-];
+  // Local state value for the base64 media asset
+  let uploadedPhotoBase64 = null;
 
-// Load existing data from the browser storage, or use defaults if empty
-let playerDatabase = JSON.parse(localStorage.getItem('sportsRegistryPhotos')) || defaultPlayers;
+  // Interactivity for File Input Clicking
+  dropZone.addEventListener("click", () => fileInput.click());
 
-// Link the code to your HTML elements
-const registrationForm = document.getElementById('registrationForm');
-const registryTableBody = document.getElementById('registryTableBody');
-const searchBar = document.getElementById('searchBar');
-const screeningResult = document.getElementById('screeningResult');
-
-// Save data locally and refresh what you see on the screen
-function updateInterface() {
-  localStorage.setItem('sportsRegistryPhotos', JSON.stringify(playerDatabase));
-  renderTable(playerDatabase);
-}
-
-// Display the players in the lower registry table
-function renderTable(data) {
-  registryTableBody.innerHTML = '';
-  data.forEach((player, index) => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td><strong>${player.id}</strong></td>
-      <td>
-        <img src="${player.photo}" class="table-avatar" alt="Avatar">
-        ${player.name}
-      </td>
-      <td>${player.school}</td>
-      <td>${player.yob}</td>
-      <td><span class="status-badge ${player.status === 'Verified' ? 'status-verified' : 'status-flagged'}">${player.status}</span></td>
-      <td><button class="btn btn-danger" onclick="deletePlayer(${index})">Remove</button></td>
-    `;
-    registryTableBody.appendChild(row);
+  // Drag over states
+  dropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropZone.classList.add("drag-over");
   });
-}
 
-// Watch for the "Add to Official Register" form submission
-registrationForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  
-  const idInput = document.getElementById('playerID').value.trim().toUpperCase();
-  
-  // Rule check: Stop duplicate IDs from being registered
-  if (playerDatabase.some(p => p.id === idInput)) {
-    alert("Error: A player with this ID is already registered!");
-    return;
-  }// --- AUTO-AGE SCREENING LOGIC ---
-const selectedCategory = document.getElementById('tournamentCategory').value;
-const inputYOB = parseInt(document.getElementById('playerYOB').value);
-const currentYear = 2026; 
-const calculatedAge = currentYear - inputYOB;
+  ["dragleave", "drop"].forEach(event => {
+    dropZone.addEventListener(event, () => dropZone.classList.remove("drag-over"));
+  });
 
-let initialStatus = "Verified";
-
-if (selectedCategory === "U15" && calculatedAge > 15) {
-    initialStatus = "Flagged";
-    alert(`⚠️ Warning: This player is ${calculatedAge} years old and exceeds the Under-15 limit! Saving as FLAGGED.`);
-} else if (selectedCategory === "U17" && calculatedAge > 17) {
-    initialStatus = "Flagged";
-    alert(`⚠️ Warning: This player is ${calculatedAge} years old and exceeds the Under-17 limit! Saving as FLAGGED.`);
-}
-// ---------------------------------
-
-// Then, inside your newPlayer object, update the status field to use the variable:
-// status: initialStatus
-  
-
-  const fileInput = document.getElementById('playerPhoto');
-  const file = fileInput.files[0];
-
-  if (file) {
-    const reader = new FileReader();
-    
-    // Once the browser finishes reading the photo file, this block runs:
-    reader.onload = function(event) {
-      const newPlayer = {
-        id: idInput,
-        name: document.getElementById('playerName').value.trim(),
-        school: document.getElementById('playerSchool').value.trim(),
-        yob: parseInt(document.getElementById('playerYOB').value),
-        status: "Verified",
-        photo: event.target.result // This is the local image converted into a text string
-      };
-
-      playerDatabase.push(newPlayer);
-      updateInterface();
-      registrationForm.reset();
-    };
-    
-    // Read the file and trigger the onload function above
-    reader.readAsDataURL(file);
-  }
-});
-
-// Remove an athlete from the database
-window.deletePlayer = function(index) {
-  if(confirm("Remove this athlete from the registry?")) {
-    playerDatabase.splice(index, 1);
-    updateInterface();
-  }
-}
-
-// The Matchday Matcher: Filters and searches as you type
-searchBar.addEventListener('input', (e) => {
-  const query = e.target.value.toLowerCase().trim();
-  
-  if (query === '') {
-    screeningResult.className = "result-box hidden";
-    return;
-  }
-
-  const match = playerDatabase.find(p => 
-    p.id.toLowerCase() === query || 
-    p.name.toLowerCase().includes(query)
-  );
-
-  screeningResult.className = "result-box";
-  
-  if (match) {
-    const isVerified = match.status === 'Verified';
-    screeningResult.style.backgroundColor = isVerified ? "#c6f6d5" : "#fed7d7";
-    screeningResult.style.color = isVerified ? "#22543d" : "#742a2a";
-    
-    // Injects the details and the photo directly into the screening alert box
-    screeningResult.innerHTML = `
-      <h3>${isVerified ? '✅ PLAYER ELIGIBLE' : '❌ SCREENING WARNING'}</h3>
-      <div class="screening-flex">
-        <img src="${match.photo}" class="screening-photo" alt="Athlete Verified Photo">
-        <div>
-          <p><strong>Name:</strong> ${match.name}</p>
-          <p><strong>Official School:</strong> ${match.school}</p>
-          <p><strong>Age Guard:</strong> Born in ${match.yob}</p>
-          <p><em>${isVerified ? 'Photo and credentials match. Cleared to play.' : 'Roster match flagged for identity violation!'}</em></p>
-        </div>
-      </div>
-    `;
-  } else {
-    screeningResult.style.backgroundColor = "#feebc8";
-    screeningResult.style.color = "#744210";
-    screeningResult.innerHTML = `
-      <h3>⚠️ NOT REGISTERED</h3>
-      <p>No athlete found matching "${e.target.value}".</p>
-      <p><em>Unregistered person. Do not let them participate.</em></p>
-    `;
-  }
-});
-
-// Draw the initial list onto the screen when the page finishes loading
-renderTable(playerDatabase);
-// Master Reset Switch to fix "ID Already Registered" error
-const clearDbBtn = document.getElementById('clearDbBtn');
-if (clearDbBtn) {
-  clearDbBtn.addEventListener('click', () => {
-    if (confirm("Are you sure you want to delete ALL players and completely reset the database? This cannot be undone.")) {
-      localStorage.removeItem('sportsRegistryPhotos'); // Wipes hidden browser memory
-      playerDatabase = [
-        { id: "STU-8821", name: "Alex Mukasa", school: "Kitante High School", yob: 2009, status: "Verified", photo: placeholderImg },
-        { id: "STU-4412", name: "Brian Okello", school: "St. Mary's College", yob: 2008, status: "Verified", photo: placeholderImg }
-      ]; // Restores fresh templates
-      updateInterface();
-      alert("Database wiped clean! You can now register fresh students using any ID.");
+  dropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    if (e.dataTransfer.files.length) {
+      fileInput.files = e.dataTransfer.files;
+      handleFile(e.dataTransfer.files[0]);
     }
   });
-}
+
+  fileInput.addEventListener("change", () => {
+    if (fileInput.files.length) {
+      handleFile(fileInput.files[0]);
+    }
+  });
+
+  function handleFile(file) {
+    if (!file.type.startsWith("image/")) {
+      alert("Please upload a valid image (PNG or JPG).");
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      alert("File size bounds exceeded. Must be under 2MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      uploadedPhotoBase64 = e.target.result;
+      idPreview.src = uploadedPhotoBase64;
+      idPreview.style.display = "block";
+      promptText.style.display = "none";
+      actionsBar.style.display = "flex";
+    };
+    reader.readAsDataURL(file);
+  }
+
+  removeBtn.addEventListener("click", (e) => {
+    e.stopPropagation(); 
+    fileInput.value = "";
+    uploadedPhotoBase64 = null;
+    idPreview.src = "";
+    idPreview.style.display = "none";
+    promptText.style.display = "block";
+    actionsBar.style.display = "none";
+  });
+
+  // Handle Form Submission Processing
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    // Guard Clause: Ensure eligibility document has been loaded
+    if (!uploadedPhotoBase64) {
+      alert("Please upload a Photo ID or Birth Certificate to complete screening.");
+      return;
+    }
+
+    // Capture standard text fields from the UI form state
+    const compiledSubmissionData = {
+      athleteName: document.getElementById("playerName").value,
+      dateOfBirth: document.getElementById("playerDOB").value,
+      schoolUnit: document.getElementById("schoolUnit").value,
+      guardianName: document.getElementById("guardianName").value,
+      guardianIdNumber: document.getElementById("guardianId").value,
+      verificationDocumentB64: uploadedPhotoBase64
+    };
+
+    // Output package validation check right in CodePen console
+    console.log("Structured Registration Payload Ready:", compiledSubmissionData);
+    alert(`Success! Profile for ${compiledSubmissionData.athleteName} is verified locally.`);
+  });
+});
