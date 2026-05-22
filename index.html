@@ -90,6 +90,16 @@
     .hidden { display: none; }
     
     /* MASTER REGISTRY TABLE DESIGN */
+    /* Forces all uploaded athlete photos to look like neat passport avatars */
+    .table-wrapper img, .result-box img {
+      width: 60px !important;
+      height: 60px !important;
+      object-fit: cover !important;
+      border-radius: 6px !important;
+      border: 2px solid #cbd5e0;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
     .table-card { width: 100%; box-sizing: border-box; }
     .table-wrapper { overflow-x: auto; margin-top: 15px; }
     table {
