@@ -45,6 +45,62 @@
             <input type="text" id="guardianId" required placeholder="e.g., ID-993821-K" />
           </div>
         </div>
+        <div class="dashboard-wrapper">
+  <!-- Sidebar Navigation -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-brand">
+      <span class="logo-icon">⚽</span>
+      <h2>EduSport Ledger</h2>
+    </div>
+    <nav class="sidebar-menu">
+      <a href="#" class="menu-item active">👤 Athlete Screening</a>
+      <a href="#" class="menu-item">🏫 District Overview</a>
+      <a href="#" class="menu-item">🚩 Age Discrepancies</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content Stage -->
+  <main class="dashboard-main">
+    <header class="main-header">
+      <h1>Screening Administration Panel</h1>
+      <p class="current-date">System Context: Regional Verification</p>
+    </header>
+
+    <!-- Metrics Cards Row -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <span class="metric-icon">📋</span>
+        <div class="metric-info">
+          <h3>Total Screened</h3>
+          <p class="metric-value" id="totalCount">0</p>
+        </div>
+      </div>
+      <div class="metric-card alert">
+        <span class="metric-icon">⚠️</span>
+        <div class="metric-info">
+          <h3>Flagged Profiles</h3>
+          <p class="metric-value">0</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Structured Data List Section -->
+    <section class="list-section">
+      <div class="section-header">
+        <h2>Registered Athlete Logs</h2>
+        <span class="live-indicator">● Live Feed</span>
+      </div>
+
+      <!-- Container mapping responsive grid lines or empty states -->
+      <div class="athlete-list" id="athleteListContainer">
+        <!-- Javascript dynamic structures insert rows here -->
+        <div class="empty-state" id="emptyState">
+          <p>No athlete entries registered yet. Submit entries through your registration form to view logs here.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
       </div>
 
       <hr class="section-divider" />
