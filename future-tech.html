@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduPulse Pass - Next-Gen Tech Lab</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #0f172a; color: #f8fafc; padding: 20px; margin: 0; }
+    .container { max-width: 800px; margin: 0 auto; }
+    header { border-bottom: 2px solid #334155; padding-bottom: 20px; margin-bottom: 30px; text-align: center; }
+    h1 { color: #38bdf8; margin: 0; font-size: 1.8rem; }
+    .tech-card { background: #1e293b; border: 1px solid #334155; padding: 20px; border-radius: 12px; margin-bottom: 25px; }
+    .tech-title { display: flex; align-items: center; justify-content: space-between; margin-top: 0; }
+    .badge-dev { background: #0369a1; color: #bae6fd; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+    .scanner-box { background: #020617; border: 2px dashed #38bdf8; height: 180px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; margin-top: 15px; }
+    .scan-line { position: absolute; width: 100%; height: 2px; background: #38bdf8; box-shadow: 0 0 10px #38bdf8; animation: moveScan 2s linear infinite; }
+    @keyframes moveScan { 0% { top: 0px; } 50% { top: 180px; } 100% { top: 0px; } }
+    .btn-action { width: 100%; background: #38bdf8; color: #0f172a; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+    .log-box { background: #020617; color: #4ade80; font-family: monospace; padding: 12px; border-radius: 6px; height: 80px; overflow-y: auto; font-size: 0.85rem; margin-top: 10px; border: 1px solid #1e293b; }
+    .face-box { border: 2px solid #22c55e; border-radius: 8px; width: 120px; height: 150px; margin: 0 auto; position: relative; background: #334155 url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5-4-8-4z'/></svg>") center/50% no-repeat; }
+    .face-corner { position: absolute; width: 15px; height: 15px; border: 3px solid #22c55e; }
+    .tl { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+    .tr { top: -2px; right: -2px; border-left: none; border-bottom: none; }
+    .bl { bottom: -2px; left: -2px; border-right: none; border-top: none; }
+    .br { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>🧪 EduPulse Pass: Next-Gen Technology Lab</h1>
+      <p style="color:#94a3b8; margin: 5px 0 0 0;">Interactive prototypes for Phase 2 tournament security scaling.</p>
+    </header>
+
+    <div class="tech-card">
+      <div class="tech-title">
+        <h2 style="margin:0; font-size:1.2rem; color:#f1f5f9;">📡 1. Pitchside NFC & Barcode Simulation</h2>
+        <span class="badge-dev">PROTOTYPE MODE</span>
+      </div>
+      <p style="color:#94a3b8; font-size:0.85rem;">Simulates scanning an athlete's physical plastic tournament wristband via phone camera or NFC reader link.</p>
+      
+      <div class="scanner-box">
+        <div class="scan-line"></div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10M12 7v10"/></svg>
+        <span style="font-size:0.8rem; color:#94a3b8; margin-top:8px;" id="scanStatus">Awaiting Device Signal...</span>
+      </div>
+
+      <button class="btn-action" onclick="simulateScan()">Simulate Pitchside Wristband Tap</button>
+      <div class="log-box" id="scanLog">> System ready. Press button to tap hardware card...</div>
+    </div>
+
+    <div class="tech-card">
+      <div class="tech-title">
+        <h2 style="margin:0; font-size:1.2rem; color:#f1f5f9;">🤖 2. Biometric Face-Matching Pipeline</h2>
+        <span class="badge-dev">PROTOTYPE MODE</span>
+      </div>
+      <p style="color:#94a3b8; font-size:0.85rem;">Simulates browser-side landmark mapping to prevent athletes from swapping jerseys before kickoff.</p>
+      
+      <div style="text-align: center; margin: 20px 0;">
+        <div class="face-box" id="faceTarget">
+          <div class="face-corner tl"></div>
+          <div class="face-corner tr"></div>
+          <div class="face-corner bl"></div>
+          <div class="face-corner br"></div>
+        </div>
+        <p id="faceMatchRate" style="font-size:1.1rem; font-weight:bold; color:#64748b; margin:10px 0 0 0;">Matching Confidence: --%</p>
+      </div>
+
+      <button class="btn-action" style="background:#22c55e; color:#020617;" onclick="simulateFaceMatch()">Run Camera Biometric Scan</button>
+      <div class="log-box" id="faceLog">> Biometric camera mesh matrix initialized offline.</div>
+    </div>
+  </div>
+
+  <script>
+    function simulateScan() {
+      const log = document.getElementById('scanLog');
+      const status = document.getElementById('scanStatus');
+      status.innerText = "READING DATA...";
+      status.style.color = "#fbbf24";
+      log.innerHTML = "> [NFC Input]: Fetching unique hardware tag UID...<br>" + log.innerHTML;
+      
+      setTimeout(() => {
+        status.innerText = "MATCHDAY PROFILE FOUND!";
+        status.style.color = "#4ade80";
+        log.innerHTML = "<span style='color:#4ade80'>> [SUCCESS]: ID STU-101 (Alex Mukasa) verified. Status: ELIGIBLE.</span><br>" + log.innerHTML;
+      }, 1200);
+    }
+
+    function simulateFaceMatch() {
+      const log = document.getElementById('faceLog');
+      const rate = document.getElementById('faceMatchRate');
+      const box = document.getElementById('faceTarget');
+      
+      box.style.borderColor = "#fbbf24";
+      rate.innerText = "Analyzing Face Meshes...";
+      rate.style.color = "#fbbf24";
+      log.innerHTML = "> [Face-API]: Mapping 68 distinct facial landmark nodes...<br>" + log.innerHTML;
+
+      setTimeout(() => {
+        box.style.borderColor = "#4ade80";
+        rate.innerText = "Identity Confirmed: 98.4% Match";
+        rate.style.color = "#4ade80";
+        log.innerHTML = "<span style='color:#4ade80'>> [SUCCESS]: Live pitchside facial structure matches stored ledger passport photo. ID verified.</span><br>" + log.innerHTML;
+      }, 1500);
+    }
+  </script>
+</body>
+</html>
