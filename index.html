@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>District & Regional Football Register - Secure Edition</title>
+  <title>District & Regional Football Register - AI Biometrics</title>
   <style>
     :root {
       --primary: #1a365d;
@@ -23,7 +23,10 @@
       padding: 15px;
     }
 
-    .container { max-width: 1200px; margin: 0 auto; }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
     header {
       background: linear-gradient(135deg, var(--primary), var(--accent));
@@ -36,7 +39,13 @@
     header h1 { margin: 0; font-size: 1.8rem; }
     header p { margin: 5px 0 0 0; opacity: 0.9; font-size: 0.95rem; }
 
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+
     @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
 
     .card {
@@ -52,19 +61,58 @@
     .form-group { margin-bottom: 12px; }
     .form-group label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.85rem; }
     .form-group input, .form-group select {
-      width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 6px; box-sizing: border-box; font-size: 0.9rem;
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #cbd5e0;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 0.9rem;
     }
 
-    .btn { width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.95rem; }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
     .btn-primary { background-color: var(--accent); color: white; }
     .btn-danger { background-color: var(--danger); color: white; padding: 5px 10px; font-size: 0.8rem; width: auto; border-radius: 4px; border: none; cursor: pointer; }
 
-    #searchBar { width: 100%; padding: 12px; border: 2px solid var(--accent); border-radius: 6px; font-size: 0.95rem; box-sizing: border-box; margin-bottom: 15px; }
+    #searchBar {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--accent);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      box-sizing: border-box;
+      margin-bottom: 15px;
+    }
+
     .result-box { padding: 15px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.05); }
     .hidden { display: none; }
 
-    .table-header-flex { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #edf2f7; padding-bottom: 10px; margin-bottom: 15px; }
-    .btn-reset { background-color: #feb2b2; color: #9b2c2c; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
+    .table-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #edf2f7;
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .btn-reset {
+      background-color: #feb2b2;
+      color: #9b2c2c;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
 
     .table-wrapper { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
@@ -72,16 +120,24 @@
     td { padding: 12px; border-bottom: 1px solid #edf2f7; vertical-align: middle; }
     
     .avatar-img {
-      width: 40px; height: 40px; object-fit: cover; border-radius: 50%; border: 2px solid #cbd5e0; vertical-align: middle; margin-right: 12px; display: inline-block;
+      width: 40px !important;
+      height: 40px !important;
+      object-fit: cover !important;
+      border-radius: 50% !important;
+      border: 2px solid #cbd5e0;
+      vertical-align: middle;
+      margin-right: 12px;
+      display: inline-block;
     }
 
     .status-badge { padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
     .status-verified { background-color: #c6f6d5; color: #22543d; }
     .status-flagged { background-color: #fed7d7; color: #742a2a; }
 
+    /* AUTH SCREEN ACCENTS */
     #authOverlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(15, 23, 42, 0.98); z-index: 9999;
+      background: rgba(15, 23, 42, 0.95); z-index: 9999;
       display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;
     }
     .auth-card {
@@ -98,34 +154,34 @@
     <div class="auth-card">
       <div style="text-align:center; margin-bottom:20px;">
         <span style="font-size: 3rem;">🔐</span>
-        <h2 style="color:var(--primary); margin:10px 0 5px 0;">Portal Gatekeeper Node</h2>
-        <p style="font-size:0.85rem; color:#64748b; margin:0;">Create a profile credential to audit matchday rosters.</p>
+        <h2 style="color:var(--primary); margin:10px 0 5px 0;">System Access Authentication</h2>
+        <p style="font-size:0.85rem; color:#64748b; margin:0;">Create an account credential to view the regional matchday registry dashboard.</p>
       </div>
       <form id="authForm">
         <div class="form-group">
-          <label>Your Full Name</label>
-          <input type="text" id="authName" required placeholder="e.g., Coach Mugisha">
+          <label>Full Name</label>
+          <input type="text" id="authName" required placeholder="e.g., Isaac Ssewankambo">
         </div>
         <div class="form-group">
-          <label>Official Email</label>
+          <label>Email Address</label>
           <input type="email" id="authEmail" required placeholder="name@school.com">
         </div>
         <div class="form-group">
-          <label>Secure Password</label>
-          <input type="password" id="authPassword" required placeholder="••••••••">
+          <label>Create Password</label>
+          <input type="password" id="authPassword" required placeholder="••••••••" minlength="4">
         </div>
         <div class="form-group">
           <label>Date of Birth</label>
           <input type="date" id="authDOB" required>
         </div>
-        <button type="submit" class="btn btn-primary" style="margin-top:10px;">Authenticate & Unlock</button>
+        <button type="submit" class="btn btn-primary" style="margin-top:10px;">Verify Identity & Grant Access</button>
       </form>
     </div>
   </div>
 
   <div class="container">
     <header>
-      <h1 id="mainAppHeader" style="cursor: pointer;">🏆 District & Regional Football Eligibility Registry</h1>
+      <h1>🏆 District & Regional Football Eligibility Registry</h1>
       <p>Anti-Fraud Age Screening & Biometric System for Inter-School Tournaments</p>
     </header>
 
@@ -171,9 +227,11 @@
 
         <div id="scannerSection" style="background: #020617; border: 2px dashed #2b6cb0; border-radius: 8px; padding: 15px; text-align: center; margin-bottom: 15px; display: none; position: relative;">
           <div style="position: absolute; width: 100%; height: 3px; background: #38bdf8; left: 0; box-shadow: 0 0 12px #38bdf8; animation: laserMove 2.5s linear infinite;"></div>
+          
           <div style="width: 120px; height: 120px; background: #334155; border-radius: 50%; margin: 10px auto; border: 3px solid #48bb78; position: relative; overflow: hidden;">
             <div style="position:absolute; width:100%; height:100%; background: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%2338bdf8\'><path d=\'M9 3H5a2 2 0 0 0-2 2v4h2V5h4V3zm10 0h-4v2h4v4h2V5a2 2 0 0 0-2-2zM5 21h4v-2H5v-4H3v4a2 2 0 0 0 2 2zm14-2h-4v2h4a2 2 0 0 0 2-2v-4h-2v4z\'/></svg>') center/80% no-repeat;"></div>
           </div>
+          
           <p id="aiScanningText" style="font-size:0.85rem; color:#38bdf8; font-weight:bold; margin:5px 0 10px 0;">AWAITING AI BIOMETRIC ANALYSIS...</p>
           <button type="button" style="background:#2b6cb0; color:white; border:none; padding:8px 15px; border-radius:4px; font-weight:bold; cursor:pointer;" onclick="runFaceMatchScan()">Run AI Face Match</button>
         </div>
@@ -187,6 +245,7 @@
         <h2>🗂️ Master Tournament Registry Ledger</h2>
         <button id="clearDbBtn" class="btn-reset">⚠️ Reset Exhibition Data</button>
       </div>
+      
       <div class="table-wrapper">
         <table>
           <thead>
@@ -204,17 +263,17 @@
       </div>
     </section>
 
-    <section id="developerVault" class="card" style="border: 2px solid #805ad5; background: #faf5ff; display: none;">
-      <h2>🛡️ Core Cloud Infrastructure: Encrypted Security Logs</h2>
-      <p style="font-size:0.85rem; margin-top:-5px; color:#6b46c1;">Protected by Developer Key hashes. System user records are securely decoupled and cryptographically hashed.</p>
+    <section class="card" style="border: 2px solid #805ad5; background: #faf5ff;">
+      <h2>📊 Live Developer Metrics Panel: Registered Platform Users</h2>
+      <p style="font-size:0.85rem; margin-top:-5px; color:#6b46c1;">This section simulates your cloud analytics database ledger, proving who logged into your app.</p>
       <div class="table-wrapper">
         <table>
           <thead>
             <tr style="background:#f3e8ff;">
-              <th style="color:#6b46c1; border-bottom:2px solid #d6bcfa;">Authorized Username</th>
-              <th style="color:#6b46c1; border-bottom:2px solid #d6bcfa;">System Email Router</th>
-              <th style="color:#6b46c1; border-bottom:2px solid #d6bcfa;">Cryptographic SHA-256 Token</th>
-              <th style="color:#6b46c1; border-bottom:2px solid #d6bcfa;">Birth Timeline</th>
+              <th style="color:#6b46c1; border-bottom:2px solid #d6bcfa;">User Profile Name</th>
+              <th style="color:#6b46c1; border-bottom:2px solid #d6bcfa;">Email Record Address</th>
+              <th style="color:#6b46c1; border-bottom:2px solid #d6bcfa;">Encrypted Security Password</th>
+              <th style="color:#6b46c1; border-bottom:2px solid #d6bcfa;">User DOB</th>
             </tr>
           </thead>
           <tbody id="userTrackerTableBody"></tbody>
@@ -242,8 +301,9 @@
       database = initialExhibitionPlayers;
     }
 
+    // USER REGISTRATION DATA FLOW PIPELINE
     let systemUsers = JSON.parse(localStorage.getItem('platformUsers2026')) || [
-      { name: "District Sports Admin", email: "admin@district.go.ug", pass: "sha256_2a8f9c", dob: "1988-04-12" }
+      { name: "District Sports Admin", email: "admin@district.go.ug", pass: "••••••••", dob: "1988-04-12" }
     ];
 
     const authOverlay = document.getElementById('authOverlay');
@@ -255,15 +315,11 @@
     const screeningResult = document.getElementById('screeningResult');
     const scannerSection = document.getElementById('scannerSection');
     const aiScanningText = document.getElementById('aiScanningText');
-    const developerVault = document.getElementById('developerVault');
-    const mainAppHeader = document.getElementById('mainAppHeader');
     let currentlyFoundPlayer = null;
 
-    // CHECK FOR ACTIVE SESSION - IF MISSING, BRING THE OVERLAY BACK SCRIPT
-    if(sessionStorage.getItem('activeUserSession') === 'true') {
+    // CHECK FOR ACTIVE USER SESSION TO KEEP APP UNLOCKED IF ALREADY IN
+    if(sessionStorage.getItem('activeUserSession')) {
       authOverlay.style.display = 'none';
-    } else {
-      authOverlay.style.display = 'flex';
     }
 
     function syncUI() {
@@ -274,11 +330,15 @@
     function renderTable(dataArray) {
       if (!registryTableBody) return;
       registryTableBody.innerHTML = '';
+      
       dataArray.forEach((player, idx) => {
         const row = document.createElement('tr');
         row.innerHTML = `
           <td><strong>${player.id}</strong></td>
-          <td><img src="${player.photo || defaultPhoto}" class="avatar-img" onerror="this.src='${defaultPhoto}'">${player.name}</td>
+          <td>
+            <img src="${player.photo || defaultPhoto}" class="avatar-img" onerror="this.src='${defaultPhoto}'">
+            ${player.name}
+          </td>
           <td>${player.school}</td>
           <td>${player.yob}</td>
           <td><span class="status-badge ${player.status === 'Verified' ? 'status-verified' : 'status-flagged'}">${player.status}</span></td>
@@ -286,15 +346,6 @@
         `;
         registryTableBody.appendChild(row);
       });
-    }
-
-    function hashCodeString(str) {
-      let hash = 0;
-      for (let i = 0; i < str.length; i++) {
-        hash = (hash << 5) - hash + str.charCodeAt(i);
-        hash |= 0;
-      }
-      return "sha256_" + Math.abs(hash).toString(16) + "e8f39c";
     }
 
     function renderUserTracker() {
@@ -305,13 +356,14 @@
         tr.innerHTML = `
           <td><strong>👤 ${u.name}</strong></td>
           <td><code>${u.email}</code></td>
-          <td><span style="font-family:monospace; background:#e2e8f0; padding:2px 6px; border-radius:4px; font-size:0.75rem; color:#4a5568;">${u.pass}</span></td>
+          <td><span style="font-family:monospace; background:#e2e8f0; padding:2px 6px; border-radius:4px;">${u.pass}</span></td>
           <td>${u.dob}</td>
         `;
         userTrackerTableBody.appendChild(tr);
       });
     }
 
+    // HANDLE USER ACCOUNT CREATION PORTAL
     if (authForm) {
       authForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -320,35 +372,21 @@
         const uPass = document.getElementById('authPassword').value;
         const uDob = document.getElementById('authDOB').value;
 
-        const securedHash = hashCodeString(uPass);
-
-        systemUsers.push({ name: uName, email: uEmail, pass: securedHash, dob: uDob });
+        // Save visitor profile metrics
+        systemUsers.push({ name: uName, email: uEmail, pass: '★' + '*'.repeat(uPass.length - 1), dob: uDob });
         localStorage.setItem('platformUsers2026', JSON.stringify(systemUsers));
         sessionStorage.setItem('activeUserSession', 'true');
         
         renderUserTracker();
         authOverlay.style.display = 'none';
-        alert(`🎉 Welcome, ${uName}! Your security clearance token is verified.`);
-      });
-    }
-
-    if (mainAppHeader) {
-      mainAppHeader.addEventListener('click', () => {
-        const masterKey = prompt("🔒 Enter Master Security Key to view developer logs:");
-        if (masterKey === "admin2026") {
-          developerVault.style.display = developerVault.style.display === 'none' ? 'block' : 'none';
-          if(developerVault.style.display === 'block') {
-            developerVault.scrollIntoView({ behavior: 'smooth' });
-          }
-        } else if (masterKey !== null) {
-          alert("❌ Access Denied: Invalid Security Signature Code.");
-        }
+        alert(`🎉 Welcome, ${uName}! Your secure developer access node is active.`);
       });
     }
 
     if (registrationForm) {
       registrationForm.addEventListener('submit', (e) => {
         e.preventDefault();
+        
         const idBox = document.getElementById('playerID').value.trim().toUpperCase();
         if (database.some(p => p.id === idBox)) {
           alert("Security Lock: This player ID is already registered!");
@@ -362,17 +400,24 @@
         let checkResult = "Verified";
         if (selectedDiv === "U15" && age > 15) {
           checkResult = "Flagged";
-          alert(`⚠️ AGE WARNING: Athlete exceeds the Under-15 limit!`);
+          alert(`⚠️ AGE WARNING: Athlete is ${age} years old and exceeds the Under-15 limit!`);
         } else if (selectedDiv === "U17" && age > 17) {
           checkResult = "Flagged";
-          alert(`⚠️ AGE WARNING: Athlete exceeds the Under-17 limit!`);
+          alert(`⚠️ AGE WARNING: Athlete is ${age} years old and exceeds the Under-17 limit!`);
         }
 
         const fileInput = document.getElementById('playerPhoto');
         const file = fileInput ? fileInput.files[0] : null;
 
         const saveWithPhoto = (photoString) => {
-          database.push({ id: idBox, name: document.getElementById('playerName').value.trim(), school: document.getElementById('playerSchool').value.trim(), yob: birthYear, status: checkResult, photo: photoString });
+          database.push({
+            id: idBox,
+            name: document.getElementById('playerName').value.trim(),
+            school: document.getElementById('playerSchool').value.trim(),
+            yob: birthYear,
+            status: checkResult,
+            photo: photoString
+          });
           syncUI();
           registrationForm.reset();
         };
@@ -385,8 +430,10 @@
               const canvas = document.createElement('canvas');
               const MAX_WIDTH = 60;
               const scale = MAX_WIDTH / img.width;
-              canvas.width = MAX_WIDTH; canvas.height = img.height * scale;
-              const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+              canvas.width = MAX_WIDTH;
+              canvas.height = img.height * scale;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
               saveWithPhoto(canvas.toDataURL('image/jpeg', 0.4));
             };
             img.src = event.target.result;
@@ -399,7 +446,10 @@
     }
 
     window.removePlayer = function(index) {
-      if(confirm("Remove this player row?")) { database.splice(index, 1); syncUI(); }
+      if(confirm("Remove this player row?")) {
+        database.splice(index, 1);
+        syncUI();
+      }
     }
 
     if (document.getElementById('clearDbBtn')) {
@@ -416,25 +466,38 @@
       searchBar.addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase().trim();
         if (query === '') {
-          scannerSection.style.display = 'none'; screeningResult.className = "result-box hidden"; return;
+          scannerSection.style.display = 'none';
+          screeningResult.className = "result-box hidden";
+          return;
         }
+
         const match = database.find(p => p.id.toLowerCase() === query || p.name.toLowerCase().includes(query));
+
         if (match) {
-          currentlyFoundPlayer = match; scannerSection.style.display = 'block';
+          currentlyFoundPlayer = match;
+          scannerSection.style.display = 'block';
           aiScanningText.innerText = "TARGET SECTOR LOCATED. READY FOR AI ANALYSIS.";
-          aiScanningText.style.color = "#38bdf8"; screeningResult.className = "result-box hidden";
+          aiScanningText.style.color = "#38bdf8";
+          screeningResult.className = "result-box hidden";
         } else {
-          currentlyFoundPlayer = null; scannerSection.style.display = 'none'; screeningResult.className = "result-box";
-          screeningResult.style.backgroundColor = "#feebc8"; screeningResult.style.color = "#744210";
+          currentlyFoundPlayer = null;
+          scannerSection.style.display = 'none';
+          screeningResult.className = "result-box";
+          screeningResult.style.backgroundColor = "#feebc8";
+          screeningResult.style.color = "#744210";
           screeningResult.innerHTML = `<h3>⚠️ NOT FOUND</h3><p style="margin:0;">No athlete registered with those details.</p>`;
         }
       });
     }
 
+    // MONETIZED LOOP WITH VIDEO AD MEETS BIOMETRIC DATA EXECUTION
     window.runFaceMatchScan = function() {
       if (!currentlyFoundPlayer) return;
-      scannerSection.style.display = 'none'; screeningResult.className = "result-box";
-      screeningResult.style.backgroundColor = "#1a202c"; screeningResult.style.color = "#ffffff";
+      
+      scannerSection.style.display = 'none';
+      screeningResult.className = "result-box";
+      screeningResult.style.backgroundColor = "#1a202c";
+      screeningResult.style.color = "#ffffff";
       
       let adCountdown = 5;
       screeningResult.innerHTML = `
@@ -452,18 +515,27 @@
         adCountdown--;
         const timerElement = document.getElementById('adTimer');
         if (timerElement) timerElement.innerText = adCountdown;
-        if (adCountdown <= 0) { clearInterval(timerInterval); runActualAIScan(); }
+        
+        if (adCountdown <= 0) {
+          clearInterval(timerInterval);
+          runActualAIScan();
+        }
       }, 1000);
     };
 
     function runActualAIScan() {
       aiScanningText.innerText = "EXTRACTING 68 FACIAL LANDMARK MESHES...";
-      aiScanningText.style.color = "#fbbf24"; scannerSection.style.display = 'block'; screeningResult.className = "result-box hidden";
+      aiScanningText.style.color = "#fbbf24";
+      scannerSection.style.display = 'block';
+      screeningResult.className = "result-box hidden";
 
       setTimeout(() => {
         const ok = currentlyFoundPlayer.status === 'Verified';
-        scannerSection.style.display = 'none'; screeningResult.className = "result-box";
-        screeningResult.style.backgroundColor = ok ? "#c6f6d5" : "#fed7d7"; screeningResult.style.color = ok ? "#22543d" : "#742a2a";
+        scannerSection.style.display = 'none';
+        screeningResult.className = "result-box";
+        
+        screeningResult.style.backgroundColor = ok ? "#c6f6d5" : "#fed7d7";
+        screeningResult.style.color = ok ? "#22543d" : "#742a2a";
         
         screeningResult.innerHTML = `
           <div style="display:flex; align-items:center; gap:15px; font-family:sans-serif;">
@@ -478,6 +550,7 @@
       }, 1500);
     }
 
+    // INITIAL LOAD RENDERS
     renderTable(database);
     renderUserTracker();
   </script>
