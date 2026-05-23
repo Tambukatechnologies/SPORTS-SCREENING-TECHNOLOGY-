@@ -383,34 +383,68 @@
         }
       });
     }
+    // UPDATED MATCH ENGINE WITH LIVE AD REVENUE MONETIZATION LOOP
+window.runFaceMatchScan = function() {
+  if (!currentlyFoundPlayer) return;
+  
+  // 1. Trigger the Simulated Video Ad Pop-up Over the Screen
+  scannerSection.style.display = 'none';
+  screeningResult.className = "result-box";
+  screeningResult.style.backgroundColor = "#1a202c";
+  screeningResult.style.color = "#ffffff";
+  
+  let adCountdown = 5;
+  screeningResult.innerHTML = `
+    <div style="text-align:center; padding: 20px; font-family:sans-serif; border: 2px solid #ecc94b; border-radius: 8px; background: #2d3748;">
+      <p style="color:#ecc94b; font-size:0.75rem; letter-spacing:1px; margin:0 0 5px 0; font-weight:bold;">✨ SPONSORED VIDEO AD IMPRESSION (UNITY ADS SDK)</p>
+      <div style="width:100%; height:100px; background:#1a202c; border-radius:6px; display:flex; align-items:center; justify-content:center; margin-bottom:10px; border:1px dashed #4a5568;">
+        <span style="color:#a0aec0; font-size:0.9rem; font-weight:bold; animation: pulse 1.5s infinite;">🎥 [Streaming Video Ad: Nike Football Kits]</span>
+      </div>
+      <p style="margin:5px 0; font-size:1.1rem; font-weight:bold;">Your AI Biometric Scan begins in: <span id="adTimer" style="color:#ecc94b; font-size:1.3rem;">5</span>s</p>
+      <p style="margin:0; font-size:0.75rem; color:#a0aec0;">Estimated CPC Payout Vector: +$0.45 USD allocated to Developer Ledger</p>
+    </div>
+  `;
 
-    window.runFaceMatchScan = function() {
-      if (!currentlyFoundPlayer) return;
-      
-      aiScanningText.innerText = "EXTRACTING 68 FACIAL LANDMARK MESHES...";
-      aiScanningText.style.color = "#fbbf24";
+  // 2. Run the 5-Second Real-Time Countdown Timer
+  const timerInterval = setInterval(() => {
+    adCountdown--;
+    const timerElement = document.getElementById('adTimer');
+    if (timerElement) timerElement.innerText = adCountdown;
+    
+    if (adCountdown <= 0) {
+      clearInterval(timerInterval);
+      runActualAIScan(); // Move to the face scan once ad finishes!
+    }
+  }, 1000);
+};
 
-      setTimeout(() => {
-        const ok = currentlyFoundPlayer.status === 'Verified';
-        scannerSection.style.display = 'none';
-        screeningResult.className = "result-box";
-        
-        screeningResult.style.backgroundColor = ok ? "#c6f6d5" : "#fed7d7";
-        screeningResult.style.color = ok ? "#22543d" : "#742a2a";
-        
-        screeningResult.innerHTML = `
-          <div style="display:flex; align-items:center; gap:15px;">
-            <img src="${currentlyFoundPlayer.photo || defaultPhoto}" style="width:50px; height:50px; border-radius:50%; object-fit:cover; border:2px solid ${ok?'#48bb78':'#e53e3e'};">
-            <div>
-              <h3 style="margin:0 0 3px 0;">${ok ? '✅ AI BIOMETRIC CONFIRMED: 98.2%' : '❌ IDENTITY DEVIATION DETECTED'}</h3>
-              <p style="margin:2px 0; font-size:0.85rem;"><strong>Name:</strong> ${currentlyFoundPlayer.name} | <strong>ID:</strong> ${currentlyFoundPlayer.id}</p>
-              <p style="margin:2px 0; font-size:0.85rem;"><strong>Status:</strong> ${currentlyFoundPlayer.status.toUpperCase()}</p>
-            </div>
-          </div>
-        `;
-      }, 1500);
-    };
+// 3. The Actual Core Facial Recognition Processing Loop
+function runActualAIScan() {
+  aiScanningText.innerText = "EXTRACTING 68 FACIAL LANDMARK MESHES...";
+  aiScanningText.style.color = "#fbbf24";
+  scannerSection.style.display = 'block';
+  screeningResult.className = "result-box hidden";
 
+  setTimeout(() => {
+    const ok = currentlyFoundPlayer.status === 'Verified';
+    scannerSection.style.display = 'none';
+    screeningResult.className = "result-box";
+    
+    screeningResult.style.backgroundColor = ok ? "#c6f6d5" : "#fed7d7";
+    screeningResult.style.color = ok ? "#22543d" : "#742a2a";
+    
+    screeningResult.innerHTML = `
+      <div style="display:flex; align-items:center; gap:15px; font-family:sans-serif;">
+        <img src="${currentlyFoundPlayer.photo || defaultPhoto}" style="width:50px; height:50px; border-radius:50%; object-fit:cover; border:2px solid ${ok?'#48bb78':'#e53e3e'};">
+        <div>
+          <h3 style="margin:0 0 3px 0;">${ok ? '✅ AI BIOMETRIC CONFIRMED: 98.2%' : '❌ IDENTITY DEVIATION DETECTED'}</h3>
+          <p style="margin:2px 0; font-size:0.85rem;"><strong>Name:</strong> ${currentlyFoundPlayer.name} | <strong>ID:</strong> ${currentlyFoundPlayer.id}</p>
+          <p style="margin:2px 0; font-size:0.85rem;"><strong>Status:</strong> ${currentlyFoundPlayer.status.toUpperCase()}</p>
+        </div>
+      </div>
+    `;
+  }, 1500);
+}
     renderTable(database);
   </script>
 </body>
