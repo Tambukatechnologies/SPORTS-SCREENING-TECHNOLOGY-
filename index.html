@@ -265,25 +265,26 @@
       }
       renderTable(database);
     }
-
     function renderTable(dataArray) {
-      if (!registryTableBody) return;
-      registryTableBody.innerHTML = '';
-      
-      dataArray.forEach((player, idx) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td><strong>${player.id}</strong></td>
-          <td><img src="${defaultPhoto}" class="avatar-img">${player.name}</td>
-          <td>${player.school}</td>
-          <td>${player.yob}</td>
-          <td><span class="status-badge ${player.status === 'Verified' ? 'status-verified' : 'status-flagged'}">${player.status}</span></td>
-          <td><button class="btn-danger" onclick="removePlayer(${idx})">Remove</button></td>
-        `;
-        registryTableBody.appendChild(row);
-      });
-    }
-
+  if (!registryTableBody) return;
+  registryTableBody.innerHTML = '';
+  
+  dataArray.forEach((player, idx) => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><strong>${player.id}</strong></td>
+      <td>
+        <img src="${player.photo || defaultPhoto}" class="avatar-img" onerror="this.src='${defaultPhoto}'">
+        ${player.name}
+      </td>
+      <td>${player.school}</td>
+      <td>${player.yob}</td>
+      <td><span class="status-badge ${player.status === 'Verified' ? 'status-verified' : 'status-flagged'}">${player.status}</span></td>
+      <td><button class="btn-danger" onclick="removePlayer(${idx})">Remove</button></td>
+    `;
+    registryTableBody.appendChild(row);
+  });
+}
     if (registrationForm) {
   registrationForm.addEventListener('submit', (e) => {
     e.preventDefault();
