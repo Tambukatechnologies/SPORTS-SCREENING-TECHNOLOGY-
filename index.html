@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>District & Regional Football Register - AI Biometrics</title>
-  <meta name="google-site-verification" content="dgmkMhfQ6U8FmPH26UVsxnu1VmGZFOB9r3f_3qzPCxU" />
   <style>
     :root {
       --primary: #1a365d;
@@ -55,6 +54,7 @@
       border-radius: 10px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.05);
       border: 1px solid #e2e8f0;
+      margin-bottom: 20px;
     }
     .card h2 { margin-top: 0; font-size: 1.25rem; color: var(--primary); border-bottom: 2px solid #edf2f7; padding-bottom: 10px; }
 
@@ -134,10 +134,50 @@
     .status-verified { background-color: #c6f6d5; color: #22543d; }
     .status-flagged { background-color: #fed7d7; color: #742a2a; }
 
+    /* AUTH SCREEN ACCENTS */
+    #authOverlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.95); z-index: 9999;
+      display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;
+    }
+    .auth-card {
+      background: white; padding: 30px; border-radius: 12px; max-width: 450px; width: 100%;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3); border: 3px solid var(--accent);
+    }
+
     @keyframes laserMove { 0% { top: 0%; } 50% { top: 100%; } 100% { top: 0%; } }
   </style>
 </head>
 <body>
+
+  <div id="authOverlay">
+    <div class="auth-card">
+      <div style="text-align:center; margin-bottom:20px;">
+        <span style="font-size: 3rem;">🔐</span>
+        <h2 style="color:var(--primary); margin:10px 0 5px 0;">System Access Authentication</h2>
+        <p style="font-size:0.85rem; color:#64748b; margin:0;">Create an account credential to view the regional matchday registry dashboard.</p>
+      </div>
+      <form id="authForm">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="authName" required placeholder="e.g., Isaac Ssewankambo">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="authEmail" required placeholder="name@school.com">
+        </div>
+        <div class="form-group">
+          <label>Create Password</label>
+          <input type="password" id="authPassword" required placeholder="••••••••" minlength="4">
+        </div>
+        <div class="form-group">
+          <label>Date of Birth</label>
+          <input type="date" id="authDOB" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top:10px;">Verify Identity & Grant Access</button>
+      </form>
+    </div>
+  </div>
 
   <div class="container">
     <header>
@@ -222,6 +262,24 @@
         </table>
       </div>
     </section>
+
+    <section class="card" style="border: 2px solid #805ad5; background: #faf5ff;">
+      <h2>📊 Live Developer Metrics Panel: Registered Platform Users</h2>
+      <p style="font-size:0.85rem; margin-top:-5px; color:#6b46c1;">This section simulates your cloud analytics database ledger, proving who logged into your app.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr style="background:#f3e8ff;">
+              <th style="color:#6b46c1; border-bottom:2px solid #d6bcfa;">User Profile Name</th>
+              <th style="color:#6b46c1; border-bottom:2px solid #d6bcfa;">Email Record Address</th>
+              <th style="color:#6b46c1; border-bottom:2px solid #d6bcfa;">Encrypted Security Password</th>
+              <th style="color:#6b46c1; border-bottom:2px solid #d6bcfa;">User DOB</th>
+            </tr>
+          </thead>
+          <tbody id="userTrackerTableBody"></tbody>
+        </table>
+      </div>
+    </section>
   </div>
 
   <script>
@@ -243,6 +301,14 @@
       database = initialExhibitionPlayers;
     }
 
+    // USER REGISTRATION DATA FLOW PIPELINE
+    let systemUsers = JSON.parse(localStorage.getItem('platformUsers2026')) || [
+      { name: "District Sports Admin", email: "admin@district.go.ug", pass: "••••••••", dob: "1988-04-12" }
+    ];
+
+    const authOverlay = document.getElementById('authOverlay');
+    const authForm = document.getElementById('authForm');
+    const userTrackerTableBody = document.getElementById('userTrackerTableBody');
     const registrationForm = document.getElementById('registrationForm');
     const registryTableBody = document.getElementById('registryTableBody');
     const searchBar = document.getElementById('searchBar');
@@ -250,6 +316,11 @@
     const scannerSection = document.getElementById('scannerSection');
     const aiScanningText = document.getElementById('aiScanningText');
     let currentlyFoundPlayer = null;
+
+    // CHECK FOR ACTIVE USER SESSION TO KEEP APP UNLOCKED IF ALREADY IN
+    if(sessionStorage.getItem('activeUserSession')) {
+      authOverlay.style.display = 'none';
+    }
 
     function syncUI() {
       localStorage.setItem('footballRegister2026', JSON.stringify(database));
@@ -274,6 +345,41 @@
           <td><button class="btn-danger" onclick="removePlayer(${idx})">Remove</button></td>
         `;
         registryTableBody.appendChild(row);
+      });
+    }
+
+    function renderUserTracker() {
+      if(!userTrackerTableBody) return;
+      userTrackerTableBody.innerHTML = '';
+      systemUsers.forEach(u => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>👤 ${u.name}</strong></td>
+          <td><code>${u.email}</code></td>
+          <td><span style="font-family:monospace; background:#e2e8f0; padding:2px 6px; border-radius:4px;">${u.pass}</span></td>
+          <td>${u.dob}</td>
+        `;
+        userTrackerTableBody.appendChild(tr);
+      });
+    }
+
+    // HANDLE USER ACCOUNT CREATION PORTAL
+    if (authForm) {
+      authForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const uName = document.getElementById('authName').value.trim();
+        const uEmail = document.getElementById('authEmail').value.trim();
+        const uPass = document.getElementById('authPassword').value;
+        const uDob = document.getElementById('authDOB').value;
+
+        // Save visitor profile metrics
+        systemUsers.push({ name: uName, email: uEmail, pass: '★' + '*'.repeat(uPass.length - 1), dob: uDob });
+        localStorage.setItem('platformUsers2026', JSON.stringify(systemUsers));
+        sessionStorage.setItem('activeUserSession', 'true');
+        
+        renderUserTracker();
+        authOverlay.style.display = 'none';
+        alert(`🎉 Welcome, ${uName}! Your secure developer access node is active.`);
       });
     }
 
@@ -383,69 +489,70 @@
         }
       });
     }
-    // UPDATED MATCH ENGINE WITH LIVE AD REVENUE MONETIZATION LOOP
-window.runFaceMatchScan = function() {
-  if (!currentlyFoundPlayer) return;
-  
-  // 1. Trigger the Simulated Video Ad Pop-up Over the Screen
-  scannerSection.style.display = 'none';
-  screeningResult.className = "result-box";
-  screeningResult.style.backgroundColor = "#1a202c";
-  screeningResult.style.color = "#ffffff";
-  
-  let adCountdown = 5;
-  screeningResult.innerHTML = `
-    <div style="text-align:center; padding: 20px; font-family:sans-serif; border: 2px solid #ecc94b; border-radius: 8px; background: #2d3748;">
-      <p style="color:#ecc94b; font-size:0.75rem; letter-spacing:1px; margin:0 0 5px 0; font-weight:bold;">✨ SPONSORED VIDEO AD IMPRESSION (UNITY ADS SDK)</p>
-      <div style="width:100%; height:100px; background:#1a202c; border-radius:6px; display:flex; align-items:center; justify-content:center; margin-bottom:10px; border:1px dashed #4a5568;">
-        <span style="color:#a0aec0; font-size:0.9rem; font-weight:bold; animation: pulse 1.5s infinite;">🎥 [Streaming Video Ad: Nike Football Kits]</span>
-      </div>
-      <p style="margin:5px 0; font-size:1.1rem; font-weight:bold;">Your AI Biometric Scan begins in: <span id="adTimer" style="color:#ecc94b; font-size:1.3rem;">5</span>s</p>
-      <p style="margin:0; font-size:0.75rem; color:#a0aec0;">Estimated CPC Payout Vector: +$0.45 USD allocated to Developer Ledger</p>
-    </div>
-  `;
 
-  // 2. Run the 5-Second Real-Time Countdown Timer
-  const timerInterval = setInterval(() => {
-    adCountdown--;
-    const timerElement = document.getElementById('adTimer');
-    if (timerElement) timerElement.innerText = adCountdown;
-    
-    if (adCountdown <= 0) {
-      clearInterval(timerInterval);
-      runActualAIScan(); // Move to the face scan once ad finishes!
-    }
-  }, 1000);
-};
-
-// 3. The Actual Core Facial Recognition Processing Loop
-function runActualAIScan() {
-  aiScanningText.innerText = "EXTRACTING 68 FACIAL LANDMARK MESHES...";
-  aiScanningText.style.color = "#fbbf24";
-  scannerSection.style.display = 'block';
-  screeningResult.className = "result-box hidden";
-
-  setTimeout(() => {
-    const ok = currentlyFoundPlayer.status === 'Verified';
-    scannerSection.style.display = 'none';
-    screeningResult.className = "result-box";
-    
-    screeningResult.style.backgroundColor = ok ? "#c6f6d5" : "#fed7d7";
-    screeningResult.style.color = ok ? "#22543d" : "#742a2a";
-    
-    screeningResult.innerHTML = `
-      <div style="display:flex; align-items:center; gap:15px; font-family:sans-serif;">
-        <img src="${currentlyFoundPlayer.photo || defaultPhoto}" style="width:50px; height:50px; border-radius:50%; object-fit:cover; border:2px solid ${ok?'#48bb78':'#e53e3e'};">
-        <div>
-          <h3 style="margin:0 0 3px 0;">${ok ? '✅ AI BIOMETRIC CONFIRMED: 98.2%' : '❌ IDENTITY DEVIATION DETECTED'}</h3>
-          <p style="margin:2px 0; font-size:0.85rem;"><strong>Name:</strong> ${currentlyFoundPlayer.name} | <strong>ID:</strong> ${currentlyFoundPlayer.id}</p>
-          <p style="margin:2px 0; font-size:0.85rem;"><strong>Status:</strong> ${currentlyFoundPlayer.status.toUpperCase()}</p>
+    // MONETIZED LOOP WITH VIDEO AD MEETS BIOMETRIC DATA EXECUTION
+    window.runFaceMatchScan = function() {
+      if (!currentlyFoundPlayer) return;
+      
+      scannerSection.style.display = 'none';
+      screeningResult.className = "result-box";
+      screeningResult.style.backgroundColor = "#1a202c";
+      screeningResult.style.color = "#ffffff";
+      
+      let adCountdown = 5;
+      screeningResult.innerHTML = `
+        <div style="text-align:center; padding: 20px; font-family:sans-serif; border: 2px solid #ecc94b; border-radius: 8px; background: #2d3748;">
+          <p style="color:#ecc94b; font-size:0.75rem; letter-spacing:1px; margin:0 0 5px 0; font-weight:bold;">✨ SPONSORED VIDEO AD IMPRESSION (UNITY ADS SDK)</p>
+          <div style="width:100%; height:100px; background:#1a202c; border-radius:6px; display:flex; align-items:center; justify-content:center; margin-bottom:10px; border:1px dashed #4a5568;">
+            <span style="color:#a0aec0; font-size:0.9rem; font-weight:bold;">🎥 [Streaming Video Ad: Nike Football Kits]</span>
+          </div>
+          <p style="margin:5px 0; font-size:1.1rem; font-weight:bold;">Your AI Biometric Scan begins in: <span id="adTimer" style="color:#ecc94b; font-size:1.3rem;">5</span>s</p>
+          <p style="margin:0; font-size:0.75rem; color:#a0aec0;">Estimated CPC Payout Vector: +$0.45 USD allocated to Developer Ledger</p>
         </div>
-      </div>
-    `;
-  }, 1500);
-}
+      `;
+
+      const timerInterval = setInterval(() => {
+        adCountdown--;
+        const timerElement = document.getElementById('adTimer');
+        if (timerElement) timerElement.innerText = adCountdown;
+        
+        if (adCountdown <= 0) {
+          clearInterval(timerInterval);
+          runActualAIScan();
+        }
+      }, 1000);
+    };
+
+    function runActualAIScan() {
+      aiScanningText.innerText = "EXTRACTING 68 FACIAL LANDMARK MESHES...";
+      aiScanningText.style.color = "#fbbf24";
+      scannerSection.style.display = 'block';
+      screeningResult.className = "result-box hidden";
+
+      setTimeout(() => {
+        const ok = currentlyFoundPlayer.status === 'Verified';
+        scannerSection.style.display = 'none';
+        screeningResult.className = "result-box";
+        
+        screeningResult.style.backgroundColor = ok ? "#c6f6d5" : "#fed7d7";
+        screeningResult.style.color = ok ? "#22543d" : "#742a2a";
+        
+        screeningResult.innerHTML = `
+          <div style="display:flex; align-items:center; gap:15px; font-family:sans-serif;">
+            <img src="${currentlyFoundPlayer.photo || defaultPhoto}" style="width:50px; height:50px; border-radius:50%; object-fit:cover; border:2px solid ${ok?'#48bb78':'#e53e3e'};">
+            <div>
+              <h3 style="margin:0 0 3px 0;">${ok ? '✅ AI BIOMETRIC CONFIRMED: 98.2%' : '❌ IDENTITY DEVIATION DETECTED'}</h3>
+              <p style="margin:2px 0; font-size:0.85rem;"><strong>Name:</strong> ${currentlyFoundPlayer.name} | <strong>ID:</strong> ${currentlyFoundPlayer.id}</p>
+              <p style="margin:2px 0; font-size:0.85rem;"><strong>Status:</strong> ${currentlyFoundPlayer.status.toUpperCase()}</p>
+            </div>
+          </div>
+        `;
+      }, 1500);
+    }
+
+    // INITIAL LOAD RENDERS
     renderTable(database);
+    renderUserTracker();
   </script>
 </body>
 </html>
