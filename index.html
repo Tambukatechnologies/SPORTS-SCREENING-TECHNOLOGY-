@@ -408,6 +408,57 @@
     }
 
     renderTable(database);
+    // FACE RECOGNITION INTERFACE INTERACTION BRAIN
+let currentlyFoundPlayer = null;
+const scannerSection = document.getElementById('scannerSection');
+const aiScanningText = document.getElementById('aiScanningText');
+
+// Intercepts your search bar changes to switch on the camera box view
+if (searchBar) {
+  searchBar.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase().trim();
+    if (query === '') {
+      scannerSection.style.display = 'none';
+      return;
+    }
+    const match = database.find(p => p.id.toLowerCase() === query || p.name.toLowerCase().includes(query));
+    if (match) {
+      currentlyFoundPlayer = match;
+      scannerSection.style.display = 'block';
+      aiScanningText.innerText = "TARGET SECTOR LOCATED. READY FOR AI ANALYSIS.";
+      aiScanningText.style.color = "#38bdf8";
+      screeningResult.className = "result-box hidden";
+    }
+  });
+}
+
+// Simulates the 68-landmark node tracking process
+window.runFaceMatchScan = function() {
+  if (!currentlyFoundPlayer) return;
+  
+  aiScanningText.innerText = "EXTRACTING 68 Facial Landmark Meshes...";
+  aiScanningText.style.color = "#fbbf24";
+
+  setTimeout(() => {
+    const ok = currentlyFoundPlayer.status === 'Verified';
+    scannerSection.style.display = 'none';
+    screeningResult.className = "result-box";
+    
+    screeningResult.style.backgroundColor = ok ? "#c6f6d5" : "#fed7d7";
+    screeningResult.style.color = ok ? "#22543d" : "#742a2a";
+    
+    screeningResult.innerHTML = `
+      <div style="display:flex; align-items:center; gap:15px; font-family:sans-serif;">
+        <img src="${currentlyFoundPlayer.photo || defaultPhoto}" style="width:50px; height:50px; border-radius:50%; object-fit:cover; border:2px solid ${ok?'#22c55e':'#ef4444'};">
+        <div>
+          <h3 style="margin:0 0 3px 0;">${ok ? '✅ AI BIOMETRIC CONFIRMED: 98.2%' : '❌ IDENTITY DEVIATION DETECTED'}</h3>
+          <p style="margin:2px 0; font-size:0.85rem;"><strong>Name:</strong> ${currentlyFoundPlayer.name} | <strong>ID:</strong> ${currentlyFoundPlayer.id}</p>
+          <p style="margin:2px 0; font-size:0.85rem;"><strong>Status:</strong> ${currentlyFoundPlayer.status.toUpperCase()}</p>
+        </div>
+      </div>
+    `;
+  }, 1500);
+};
   </script>
 </body>
 </html>
