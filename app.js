@@ -1,5 +1,7 @@
 // Sample placeholder image to display if a default player doesn't have a photo uploaded yet
 const placeholderImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100%' height='100%' fill='%23cbd5e0'/><text x='50%' y='55%' font-family='sans-serif' font-size='12' fill='%234a5568' text-anchor='middle'>No Photo</text></svg>";
+// Android Java Fix
+webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
 
 // Pre-loaded sample players to test the system immediately
 const defaultPlayers = [
