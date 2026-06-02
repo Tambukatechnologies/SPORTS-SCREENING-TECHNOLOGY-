@@ -41,14 +41,14 @@
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            background-color: #cbd5e1;
+            background-color: #e2e8f0;
             margin: 0 auto 15px auto;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 2.5rem;
             color: #64748b;
-            border: 3px solid #e2e8f0;
+            border: 3px solid #cbd5e1;
         }
 
         .dashboard-sidebar h2 {
@@ -179,7 +179,7 @@
         .btn-action-approve { background: #2563eb; color: #ffffff; }
         .btn-action-approve:hover { background: #1d4ed8; }
         .btn-action-cancel { background: #cbd5e1; color: #475569; }
-        .btn-action-cancel:hover { background: #b91c1c; color: #ffffff; }
+        .btn-action-cancel:hover { background: #64748b; }
         
         .btn-action-back { 
             background: #475569; 
@@ -190,9 +190,9 @@
 
 
         /* ========================================== */
-        /* AUTOMATED VOICE STATUS ENGINE STYLING      */
+        /* VISUAL SCREENING STATUS DISPLAY STYLING    */
         /* ========================================== */
-        .voice-status-container {
+        .status-display-container {
             background: #ffffff;
             border: 1px solid #e2e8f0;
             border-radius: 12px;
@@ -201,20 +201,14 @@
             transition: all 0.3s ease;
         }
 
-        .voice-header {
+        .status-display-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
 
-        .voice-title-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .voice-status-container h3 {
+        .status-display-container h3 {
             margin: 0;
             color: #1e293b;
             font-size: 1.1rem;
@@ -224,134 +218,74 @@
             font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
-            padding: 4px 10px;
+            padding: 4px 12px;
             border-radius: 20px;
             background: #e2e8f0;
             color: #475569;
+            border: 1px solid #cbd5e1;
         }
 
-        .section-desc {
-            font-size: 0.85rem;
-            color: #64748b;
-            margin: 0 0 15px 0;
-        }
-
-        .status-announcement-box {
+        .status-msg-box {
             background: #f8fafc;
             border-left: 4px solid #cbd5e1;
             border-radius: 6px;
             padding: 15px;
-            margin: 15px 0;
-            min-height: 50px;
+            min-height: 45px;
             display: flex;
             align-items: center;
-        }
-
-        #spokenTextPreview {
-            margin: 0;
-            font-style: italic;
+            font-weight: 500;
             font-size: 0.95rem;
             color: #475569;
-            line-height: 1.4;
         }
 
-        /* Dynamic Status Accent States */
-        .state-verified {
-            border-left-width: 5px;
-            border-color: #10b981 !important;
-            background-color: #ecfdf5 !important;
+        /* Visual Alert State Modifiers */
+        .panel-verified {
+            border-color: #10b981;
+            background: #f0fdf4;
         }
-        .state-verified #spokenTextPreview { color: #065f46; font-weight: 500; }
-        #voiceStatusBadge.badge-verified { background: #d1fae5; color: #065f46; }
+        .panel-verified .status-badge { background: #d1fae5; color: #065f46; border-color: #10b981; }
+        .panel-verified .status-msg-box { background: #ffffff; border-color: #10b981; color: #065f46; }
 
-        .state-flagged {
-            border-left-width: 5px;
-            border-color: #ef4444 !important;
-            background-color: #fef2f2 !important;
-            animation: alarmGlow 1.5s infinite;
+        .panel-flagged {
+            border-color: #ef4444;
+            background: #fef2f2;
+            animation: panelGlow 1.5s infinite;
         }
-        .state-flagged #spokenTextPreview { color: #991b1b; font-weight: bold; }
-        #voiceStatusBadge.badge-flagged { background: #fee2e2; color: #991b1b; }
+        .panel-flagged .status-badge { background: #fee2e2; color: #991b1b; border-color: #ef4444; }
+        .panel-flagged .status-msg-box { background: #ffffff; border-color: #ef4444; color: #991b1b; }
 
-        @keyframes alarmGlow {
+        .panel-hold {
+            border-color: #f59e0b;
+            background: #fffbeb;
+        }
+        .panel-hold .status-badge { background: #fef3c7; color: #92400e; border-color: #f59e0b; }
+        .panel-hold .status-msg-box { background: #ffffff; border-color: #f59e0b; color: #92400e; }
+
+        @keyframes panelGlow {
             0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); }
             70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
-
-        /* Equalizer Wave Icon */
-        .audio-wave-icon {
-            display: flex;
-            align-items: flex-end;
-            gap: 3px;
-            width: 20px;
-            height: 15px;
-        }
-        
-        .audio-wave-icon span {
-            width: 3px;
-            background-color: #2563eb;
-            height: 30%;
-            border-radius: 3px;
-        }
-
-        .speaking .audio-wave-icon span {
-            background-color: #10b981;
-            animation: bounce 0.5s ease-in-out infinite alternate;
-        }
-        .speaking.voice-alert-active .audio-wave-icon span { background-color: #ef4444; }
-        .speaking .audio-wave-icon span:nth-child(2) { animation-delay: 0.1s; }
-        .speaking .audio-wave-icon span:nth-child(3) { animation-delay: 0.2s; }
-
-        @keyframes bounce {
-            0% { height: 30%; }
-            100% { height: 100%; }
-        }
-
-        .btn-replay {
-            background: #f1f5f9;
-            color: #334155;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            padding: 8px 14px;
-            font-weight: 500;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .btn-replay:hover:not(:disabled) { background: #e2e8f0; }
-        .btn-replay:disabled { opacity: 0.5; cursor: not-allowed; }
     </style>
 </head>
 <body>
 
-    <!-- Main Registration & Screening Form Wrapper -->
     <form id="playerScreeningForm" onsubmit="event.preventDefault(); handleFinalSubmit();">
         
         <div class="screening-dashboard-container">
 
-            <!-- ========================================== -->
-            <!-- LEFT PANEL: PLAYER AVATAR & QUICK CONTROLS -->
-            <!-- ========================================== -->
             <div class="dashboard-sidebar">
                 <div class="profile-avatar" id="avatarBox">👤</div>
                 <h2 id="displayPlayerName">New Participant</h2>
                 <span class="player-id-label" id="displayPlayerDistrict">District Registry Terminal</span>
                 
-                <div style="margin-top: 35px; padding-top: 20px; border-top: 1px dashed #cbd5e1; text-align: left;">
-                    <p style="font-size: 0.8rem; font-weight: bold; color: #64748b; margin-bottom: 10px;">DIRECT VOICE AUDIO TESTING:</p>
-                    <button type="button" onclick="testVoiceAlert('verified')" style="width:100%; margin-bottom:8px; padding:8px; background:#d1fae5; color:#065f46; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">🔊 Force Verify Audio</button>
-                    <button type="button" onclick="testVoiceAlert('flagged')" style="width:100%; padding:8px; background:#fee2e2; color:#991b1b; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">🚨 Force Alarm Audio</button>
-                </div>
+                <p style="font-size: 0.8rem; margin-top: 30px; color: #94a3b8; border-top: 1px solid #f1f5f9; padding-top: 15px;">
+                    Tambuka Screening System v2.1
+                </p>
             </div>
 
-            <!-- ========================================== -->
-            <!-- RIGHT PANEL: PRIMARY REGISTRATION FORM     -->
-            <!-- ========================================== -->
             <div class="dashboard-main-content">
                 
-                <!-- Player Details Card Sections -->
                 <div class="verification-step-card">
                     <h3>Player Registration Ledger Details</h3>
                     
@@ -380,10 +314,8 @@
                     </div>
                 </div>
 
-                <!-- Live Screening Integrations Checklist -->
                 <div class="verification-step-card">
                     <h3>Biometric Screening Verification Parameters</h3>
-                    <p class="section-desc">Toggle these metrics to test biometric confirmation parameters.</p>
                     
                     <div class="checkbox-group">
                         <label class="checkbox-label">
@@ -398,35 +330,16 @@
                     </div>
                 </div>
 
-                <!-- ======================================================== -->
-                <!-- DYNAMIC SYSTEM AUDIO ASSISTANT ENGINE VIEW               -->
-                <!-- ======================================================== -->
-                <div class="voice-status-container" id="voiceStatusBox">
-                    <div class="voice-header">
-                        <div class="voice-title-row">
-                            <div class="audio-wave-icon" id="waveIcon">
-                                <span></span><span></span><span></span>
-                            </div>
-                            <h3>System Audio Assistant</h3>
-                        </div>
-                        <span class="status-badge" id="voiceStatusBadge">Ready</span>
+                <div class="status-display-container" id="statusDisplayPanel">
+                    <div class="status-display-header">
+                        <h3>Screening Status Matrix</h3>
+                        <span class="status-badge" id="panelBadge">STANDBY</span>
                     </div>
                     
-                    <p class="section-desc">The speech interface announces automatic confirmation summaries or security alarms.</p>
-                    
-                    <div class="status-announcement-box" id="announcementBox">
-                        <p id="spokenTextPreview">"System standing by. Interact with forms and commit entries to broadcast status."</p>
-                    </div>
-
-                    <div class="controls-row">
-                        <button type="button" id="replayVoiceBtn" class="btn-replay" disabled>
-                            🔊 Replay Verification Announcement
-                        </button>
+                    <div class="status-msg-box" id="panelMsgBox">
+                        System standing by. Complete verification metrics or commit entry to determine ledger status.
                     </div>
                 </div>
-                <!-- ======================================================== -->
-
-                <!-- Footer Operational Actions -->
                 <div class="form-actions-row">
                     <button type="button" class="btn-action btn-action-back" onclick="goBackToPreviousPage()">⬅️ Back</button>
                     <button type="button" class="btn-action btn-action-cancel" onclick="handleHold()">Hold Entry</button>
@@ -437,13 +350,8 @@
         </div>
     </form>
 
-    <!-- ========================================== -->
-    <!-- JAVASCRIPT SYSTEM ENGINE MODULES           -->
-    <!-- ========================================== -->
     <script>
-        let lastSpokenText = "";
-
-        // Keeps left sidebar information updated dynamically when typing in form inputs
+        // Synchronize inputs dynamically to update the sidebar layout card
         function syncFormText() {
             const nameInput = document.getElementById('playerNameInput').value;
             const districtInput = document.getElementById('playerDistrictInput').value;
@@ -452,104 +360,57 @@
             document.getElementById('displayPlayerDistrict').textContent = "District: " + districtInput;
         }
 
-        // Initialize sync values right on load
+        // Initialize display context on page load
         syncFormText();
 
-        /**
-         * Navigation Controller
-         * Returns the administrator cleanly to the previous screening queue ledger
-         */
+        // Dashboard Back Button Router Function 
         function goBackToPreviousPage() {
             window.history.back();
-            // Alternatively, uncomment below to point to a specific file:
-            // window.location.href = "dashboard.html";
         }
 
         /**
-         * Web Speech Synthesis Engine Voice Output Broadcaster
+         * State Machine Updates
+         * Visually changes dashboard cards based on the evaluation result
          */
-        function announceScreeningStatus(statusType, playerName) {
-            // Cancel lingering speech lines to prevent voice queue overlaps
-            window.speechSynthesis.cancel();
+        function updateVisualPanel(state, message) {
+            const panel = document.getElementById('statusDisplayPanel');
+            const badge = document.getElementById('panelBadge');
+            const msgBox = document.getElementById('panelMsgBox');
 
-            const textPreview = document.getElementById('spokenTextPreview');
-            const statusBox = document.getElementById('announcementBox');
-            const badge = document.getElementById('voiceStatusBadge');
-            const container = document.getElementById('voiceStatusBox');
-            const replayBtn = document.getElementById('replayVoiceBtn');
+            // Reset dynamic modifier classes
+            panel.classList.remove('panel-verified', 'panel-flagged', 'panel-hold');
 
-            let message = "";
-
-            statusBox.classList.remove('state-verified', 'state-flagged');
-            badge.classList.remove('badge-verified', 'badge-flagged');
-            container.classList.remove('voice-alert-active');
-
-            if (statusType === 'verified') {
-                message = `Access Granted. Player ${playerName} has been successfully verified. Eligibility cleared.`;
-                statusBox.classList.add('state-verified');
-                badge.classList.add('badge-verified');
+            if (state === 'verified') {
+                panel.classList.add('panel-verified');
                 badge.textContent = "VERIFIED";
-            } else if (statusType === 'flagged') {
-                message = `Warning. Alarm triggered. Player ${playerName} has been flagged for profile discrepancies. Review documents immediately.`;
-                statusBox.classList.add('state-flagged');
-                badge.classList.add('badge-flagged');
-                badge.textContent = "WARNING ALARM";
-                container.classList.add('voice-alert-active');
-            } else if (statusType === 'hold') {
-                message = `Screening Paused. Registration entry for ${playerName} is placed on temporary hold.`;
-                badge.textContent = "HOLD";
+                msgBox.innerHTML = "✅ " + message;
+            } else if (state === 'flagged') {
+                panel.classList.add('panel-flagged');
+                badge.textContent = "ALERT FLAGGED";
+                msgBox.innerHTML = "🚨 " + message;
+            } else if (state === 'hold') {
+                panel.classList.add('panel-hold');
+                badge.textContent = "ENTRY ON HOLD";
+                msgBox.innerHTML = "⏳ " + message;
             }
-
-            lastSpokenText = message;
-            textPreview.textContent = `"${message}"`;
-            replayBtn.disabled = false;
-
-            // Generate Voice Output
-            const speechUtterance = new SpeechSynthesisUtterance(message);
-            speechUtterance.rate = 0.95; // Steady pitch rate optimized for clear stadium/field screening audits
-            speechUtterance.pitch = 1.0;
-            
-            speechUtterance.onstart = () => container.classList.add('speaking');
-            speechUtterance.onend = () => container.classList.remove('speaking');
-
-            window.speechSynthesis.speak(speechUtterance);
         }
 
-        // Dedicated testing utility hooks
-        function testVoiceAlert(type) {
-            const name = document.getElementById('playerNameInput').value || "Unknown Player";
-            announceScreeningStatus(type, name);
-        }
-
-        // Replay button interface trigger
-        document.getElementById('replayVoiceBtn').addEventListener('click', () => {
-            if (lastSpokenText) {
-                const replayUtterance = new SpeechSynthesisUtterance(lastSpokenText);
-                const container = document.getElementById('voiceStatusBox');
-                replayUtterance.rate = 0.95;
-                replayUtterance.onstart = () => container.classList.add('speaking');
-                replayUtterance.onend = () => container.classList.remove('speaking');
-                window.speechSynthesis.speak(replayUtterance);
-            }
-        });
-
-        // Triggered upon pressing the final 'Commit & Verify Player' form button
+        // Triggered upon pressing 'Commit & Verify Player'
         function handleFinalSubmit() {
-            const name = document.getElementById('playerNameInput').value || "New Player";
+            const name = document.getElementById('playerNameInput').value || "Participant";
             const ageCheatChecked = document.getElementById('ageCheatCheck').checked;
 
             if (ageCheatChecked) {
-                announceScreeningStatus('flagged', name);
+                updateVisualPanel('flagged', `CRITICAL ACCUSATION: Registration for ${name} has been rejected due to age discrepancies or duplicate token indicators.`);
             } else {
-                announceScreeningStatus('verified', name);
-                alert("Database Update: Entry saved into registration registry ledger.");
+                updateVisualPanel('verified', `SUCCESS: Entry for ${name} cleared. Data compiled and logged into the secure tournament register.`);
             }
         }
 
-        // Triggered upon clicking the grey 'Hold Entry' button
+        // Triggered upon pressing 'Hold Entry'
         function handleHold() {
-            const name = document.getElementById('playerNameInput').value || "New Player";
-            announceScreeningStatus('hold', name);
+            const name = document.getElementById('playerNameInput').value || "Participant";
+            updateVisualPanel('hold', `PENDING: Screening for ${name} suspended. Awaiting additional validation documentation.`);
         }
     </script>
 </body>
