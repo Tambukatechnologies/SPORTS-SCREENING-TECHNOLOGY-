@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Screening Platform Dashboard</title>
+    <title>District Screening & Player Registration Platform</title>
     <style>
         /* ========================================== */
         /* GENERAL DASHBOARD LAYOUT & STYLING        */
@@ -34,6 +34,7 @@
             padding: 20px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             text-align: center;
+            height: fit-content;
         }
 
         .profile-avatar {
@@ -47,6 +48,7 @@
             justify-content: center;
             font-size: 2.5rem;
             color: #64748b;
+            border: 3px solid #e2e8f0;
         }
 
         .dashboard-sidebar h2 {
@@ -64,7 +66,7 @@
             display: inline-block;
         }
 
-        /* Right Side Panel: Main Content Verification */
+        /* Right Side Panel: Main Content Verification & Registration Form */
         .dashboard-main-content {
             flex: 2;
             min-width: 450px;
@@ -89,11 +91,52 @@
             padding-bottom: 10px;
         }
 
+        /* Form Inputs Styling */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .form-group input, .form-group select {
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            color: #334155;
+            background-color: #f8fafc;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: 2px solid #2563eb;
+            background-color: #ffffff;
+        }
+
         .checkbox-group {
             display: flex;
             flex-direction: column;
             gap: 12px;
             margin-top: 15px;
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 8px;
         }
 
         .checkbox-label {
@@ -102,6 +145,7 @@
             gap: 10px;
             font-weight: 500;
             cursor: pointer;
+            font-size: 0.95rem;
         }
 
         .checkbox-label input {
@@ -110,7 +154,7 @@
             cursor: pointer;
         }
 
-        /* Final Action Buttons */
+        /* Buttons Styling Layout */
         .form-actions-row {
             display: flex;
             gap: 15px;
@@ -126,12 +170,23 @@
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .btn-action-approve { background: #2563eb; color: #ffffff; }
         .btn-action-approve:hover { background: #1d4ed8; }
-        .btn-action-cancel { background: #e2e8f0; color: #475569; }
-        .btn-action-cancel:hover { background: #cbd5e1; }
+        .btn-action-cancel { background: #cbd5e1; color: #475569; }
+        .btn-action-cancel:hover { background: #b91c1c; color: #ffffff; }
+        
+        .btn-action-back { 
+            background: #475569; 
+            color: #ffffff; 
+            max-width: 130px; 
+        }
+        .btn-action-back:hover { background: #334155; }
 
 
         /* ========================================== */
@@ -173,7 +228,6 @@
             border-radius: 20px;
             background: #e2e8f0;
             color: #475569;
-            transition: all 0.2s;
         }
 
         .section-desc {
@@ -191,7 +245,6 @@
             min-height: 50px;
             display: flex;
             align-items: center;
-            transition: all 0.2s;
         }
 
         #spokenTextPreview {
@@ -202,9 +255,7 @@
             line-height: 1.4;
         }
 
-        /* --- Dynamic Voice Result Accent States --- */
-        
-        /* 1. Verified (Success Green Profile) */
+        /* Dynamic Status Accent States */
         .state-verified {
             border-left-width: 5px;
             border-color: #10b981 !important;
@@ -213,7 +264,6 @@
         .state-verified #spokenTextPreview { color: #065f46; font-weight: 500; }
         #voiceStatusBadge.badge-verified { background: #d1fae5; color: #065f46; }
 
-        /* 2. Flagged (Alarm Red Profile) */
         .state-flagged {
             border-left-width: 5px;
             border-color: #ef4444 !important;
@@ -229,7 +279,7 @@
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
 
-        /* Audio Wave Equalizer Visualizer */
+        /* Equalizer Wave Icon */
         .audio-wave-icon {
             display: flex;
             align-items: flex-end;
@@ -243,16 +293,13 @@
             background-color: #2563eb;
             height: 30%;
             border-radius: 3px;
-            transition: all 0.2s;
         }
 
         .speaking .audio-wave-icon span {
             background-color: #10b981;
             animation: bounce 0.5s ease-in-out infinite alternate;
         }
-        .speaking.voice-alert-active .audio-wave-icon span {
-            background-color: #ef4444;
-        }
+        .speaking.voice-alert-active .audio-wave-icon span { background-color: #ef4444; }
         .speaking .audio-wave-icon span:nth-child(2) { animation-delay: 0.1s; }
         .speaking .audio-wave-icon span:nth-child(3) { animation-delay: 0.2s; }
 
@@ -279,85 +326,150 @@
 </head>
 <body>
 
-    <div class="screening-dashboard-container">
+    <!-- Main Registration & Screening Form Wrapper -->
+    <form id="playerScreeningForm" onsubmit="event.preventDefault(); handleFinalSubmit();">
+        
+        <div class="screening-dashboard-container">
 
-        <div class="dashboard-sidebar">
-            <div class="profile-avatar">👤</div>
-            <h2 id="displayPlayerName">Brian Ssenyondo</h2>
-            <span class="player-id-label">Registration ID: UG-2026-8891</span>
-            
-            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px dashed #cbd5e1; text-align: left;">
-                <p style="font-size: 0.8rem; font-weight: bold; color: #64748b; margin-bottom: 10px;">TEST AUDIO ALARMS LIVE:</p>
-                <button onclick="announceScreeningStatus('verified', 'Brian Ssenyondo')" style="width:100%; margin-bottom:8px; padding:6px; background:#d1fae5; color:#065f46; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">Trigger Verify Speech</button>
-                <button onclick="announceScreeningStatus('flagged', 'Brian Ssenyondo')" style="width:100%; padding:6px; background:#fee2e2; color:#991b1b; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">Trigger Warning Alarm</button>
-            </div>
-        </div>
-
-        <div class="dashboard-main-content">
-            
-            <div class="verification-step-card">
-                <h3>Identity & Match Parameters</h3>
-                <div class="checkbox-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" checked> Digital ID Verification Clear
-                    </label>
-                    <label class="checkbox-label">
-                        <input type="checkbox" checked> Biometric Face Match Verified
-                    </label>
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="ageCheatCheck"> Check this to trigger Age Cheat Flag / Discrepancy
-                    </label>
+            <!-- ========================================== -->
+            <!-- LEFT PANEL: PLAYER AVATAR & QUICK CONTROLS -->
+            <!-- ========================================== -->
+            <div class="dashboard-sidebar">
+                <div class="profile-avatar" id="avatarBox">👤</div>
+                <h2 id="displayPlayerName">New Participant</h2>
+                <span class="player-id-label" id="displayPlayerDistrict">District Registry Terminal</span>
+                
+                <div style="margin-top: 35px; padding-top: 20px; border-top: 1px dashed #cbd5e1; text-align: left;">
+                    <p style="font-size: 0.8rem; font-weight: bold; color: #64748b; margin-bottom: 10px;">DIRECT VOICE AUDIO TESTING:</p>
+                    <button type="button" onclick="testVoiceAlert('verified')" style="width:100%; margin-bottom:8px; padding:8px; background:#d1fae5; color:#065f46; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">🔊 Force Verify Audio</button>
+                    <button type="button" onclick="testVoiceAlert('flagged')" style="width:100%; padding:8px; background:#fee2e2; color:#991b1b; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">🚨 Force Alarm Audio</button>
                 </div>
             </div>
 
-            <div class="voice-status-container" id="voiceStatusBox">
-                <div class="voice-header">
-                    <div class="voice-title-row">
-                        <div class="audio-wave-icon" id="waveIcon">
-                            <span></span><span></span><span></span>
+            <!-- ========================================== -->
+            <!-- RIGHT PANEL: PRIMARY REGISTRATION FORM     -->
+            <!-- ========================================== -->
+            <div class="dashboard-main-content">
+                
+                <!-- Player Details Card Sections -->
+                <div class="verification-step-card">
+                    <h3>Player Registration Ledger Details</h3>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="playerNameInput">Full Legal Name</label>
+                            <input type="text" id="playerNameInput" placeholder="Enter Full Name" value="Brian Ssenyondo" oninput="syncFormText()" required>
                         </div>
-                        <h3>System Audio Assistant</h3>
+                        <div class="form-group">
+                            <label for="playerDistrictInput">District / Region</label>
+                            <select id="playerDistrictInput" onchange="syncFormText()">
+                                <option value="Kampala Central">Kampala Central</option>
+                                <option value="Wakiso District">Wakiso District</option>
+                                <option value="Gulu City">Gulu City</option>
+                                <option value="Mbarara District">Mbarara District</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="playerDOB">Date of Birth (For Age Screening)</label>
+                            <input type="date" id="playerDOB" value="2009-04-12" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="playerPhotoFile">Upload Verification Photo</label>
+                            <input type="file" id="playerPhotoFile" accept="image/*">
+                        </div>
                     </div>
-                    <span class="status-badge" id="voiceStatusBadge">Ready</span>
-                </div>
-                
-                <p class="section-desc">The system will verbally broadcast identity confirmation status and screening warnings.</p>
-                
-                <div class="status-announcement-box" id="announcementBox">
-                    <p id="spokenTextPreview">"System standing by. Trigger verification or warnings to broadcast voice audio notifications."</p>
                 </div>
 
-                <div class="controls-row">
-                    <button type="button" id="replayVoiceBtn" class="btn-replay" disabled>
-                        🔊 Replay Announcement
-                    </button>
+                <!-- Live Screening Integrations Checklist -->
+                <div class="verification-step-card">
+                    <h3>Biometric Screening Verification Parameters</h3>
+                    <p class="section-desc">Toggle these metrics to test biometric confirmation parameters.</p>
+                    
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="digitalIdCheck" checked> Government / School Digital ID Matches Data
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="biometricFaceCheck" checked> Biometric Face Match Verified (Tambuka Match Engine)
+                        </label>
+                        <label class="checkbox-label" style="color: #b91c1c; font-weight: 600;">
+                            <input type="checkbox" id="ageCheatCheck"> FLAG TARGET FOR AGE CHEATING / SUSPICION ALARM
+                        </label>
+                    </div>
                 </div>
-            </div>
-            <div class="form-actions-row">
-                <!-- Form Action Footer -->
-<div class="form-actions-row">
-    <!-- ADD THIS BACK BUTTON LINE HERE -->
-    <button type="button" class="btn-action btn-action-back" onclick="goBackToPreviousPage()">⬅️ Back</button>
-    
-    <button type="button" class="btn-action btn-action-cancel" onclick="alert('Profile processing suspended.')">Hold Profile</button>
-    <button type="button" class="btn-action btn-action-approve" onclick="handleFinalSubmit()">Commit to Registry</button>
-</div>
-                <button type="button" class="btn-action btn-action-cancel" onclick="alert('Profile processing suspended.')">Hold Profile</button>
-                <button type="button" class="btn-action btn-action-approve" onclick="handleFinalSubmit()">Commit to Registry</button>
-            </div>
 
+                <!-- ======================================================== -->
+                <!-- DYNAMIC SYSTEM AUDIO ASSISTANT ENGINE VIEW               -->
+                <!-- ======================================================== -->
+                <div class="voice-status-container" id="voiceStatusBox">
+                    <div class="voice-header">
+                        <div class="voice-title-row">
+                            <div class="audio-wave-icon" id="waveIcon">
+                                <span></span><span></span><span></span>
+                            </div>
+                            <h3>System Audio Assistant</h3>
+                        </div>
+                        <span class="status-badge" id="voiceStatusBadge">Ready</span>
+                    </div>
+                    
+                    <p class="section-desc">The speech interface announces automatic confirmation summaries or security alarms.</p>
+                    
+                    <div class="status-announcement-box" id="announcementBox">
+                        <p id="spokenTextPreview">"System standing by. Interact with forms and commit entries to broadcast status."</p>
+                    </div>
+
+                    <div class="controls-row">
+                        <button type="button" id="replayVoiceBtn" class="btn-replay" disabled>
+                            🔊 Replay Verification Announcement
+                        </button>
+                    </div>
+                </div>
+                <!-- ======================================================== -->
+
+                <!-- Footer Operational Actions -->
+                <div class="form-actions-row">
+                    <button type="button" class="btn-action btn-action-back" onclick="goBackToPreviousPage()">⬅️ Back</button>
+                    <button type="button" class="btn-action btn-action-cancel" onclick="handleHold()">Hold Entry</button>
+                    <button type="submit" class="btn-action btn-action-approve">Commit & Verify Player</button>
+                </div>
+
+            </div>
         </div>
-    </div>
+    </form>
 
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT SYSTEM ENGINE MODULES           -->
+    <!-- ========================================== -->
     <script>
         let lastSpokenText = "";
 
+        // Keeps left sidebar information updated dynamically when typing in form inputs
+        function syncFormText() {
+            const nameInput = document.getElementById('playerNameInput').value;
+            const districtInput = document.getElementById('playerDistrictInput').value;
+            
+            document.getElementById('displayPlayerName').textContent = nameInput ? nameInput : "New Participant";
+            document.getElementById('displayPlayerDistrict').textContent = "District: " + districtInput;
+        }
+
+        // Initialize sync values right on load
+        syncFormText();
+
         /**
-         * System Speech Synthesis Engine
-         * Generates dynamic automated voice feedback alerts based on verification codes
+         * Navigation Controller
+         * Returns the administrator cleanly to the previous screening queue ledger
+         */
+        function goBackToPreviousPage() {
+            window.history.back();
+            // Alternatively, uncomment below to point to a specific file:
+            // window.location.href = "dashboard.html";
+        }
+
+        /**
+         * Web Speech Synthesis Engine Voice Output Broadcaster
          */
         function announceScreeningStatus(statusType, playerName) {
-            // Cancel active processing lines to resolve overlapping audio streams
+            // Cancel lingering speech lines to prevent voice queue overlaps
             window.speechSynthesis.cancel();
 
             const textPreview = document.getElementById('spokenTextPreview');
@@ -368,70 +480,76 @@
 
             let message = "";
 
-            // Flush old accent classes
             statusBox.classList.remove('state-verified', 'state-flagged');
             badge.classList.remove('badge-verified', 'badge-flagged');
             container.classList.remove('voice-alert-active');
 
-            // 1. Compile System Voice Scripts
             if (statusType === 'verified') {
                 message = `Access Granted. Player ${playerName} has been successfully verified. Eligibility cleared.`;
-                
                 statusBox.classList.add('state-verified');
                 badge.classList.add('badge-verified');
                 badge.textContent = "VERIFIED";
-                
             } else if (statusType === 'flagged') {
                 message = `Warning. Alarm triggered. Player ${playerName} has been flagged for profile discrepancies. Review documents immediately.`;
-                
                 statusBox.classList.add('state-flagged');
                 badge.classList.add('badge-flagged');
                 badge.textContent = "WARNING ALARM";
                 container.classList.add('voice-alert-active');
+            } else if (statusType === 'hold') {
+                message = `Screening Paused. Registration entry for ${playerName} is placed on temporary hold.`;
+                badge.textContent = "HOLD";
             }
 
             lastSpokenText = message;
             textPreview.textContent = `"${message}"`;
             replayBtn.disabled = false;
 
-            // 2. Load and Speak Utterance
+            // Generate Voice Output
             const speechUtterance = new SpeechSynthesisUtterance(message);
-            speechUtterance.rate = 0.95; // Slightly measured pace for better field environment clarity
+            speechUtterance.rate = 0.95; // Steady pitch rate optimized for clear stadium/field screening audits
             speechUtterance.pitch = 1.0;
             
-            speechUtterance.onstart = () => {
-                container.classList.add('speaking');
-            };
-            speechUtterance.onend = () => {
-                container.classList.remove('speaking');
-            };
+            speechUtterance.onstart = () => container.classList.add('speaking');
+            speechUtterance.onend = () => container.classList.remove('speaking');
 
             window.speechSynthesis.speak(speechUtterance);
         }
 
-        // Connect the Voice Replay Utility Button
+        // Dedicated testing utility hooks
+        function testVoiceAlert(type) {
+            const name = document.getElementById('playerNameInput').value || "Unknown Player";
+            announceScreeningStatus(type, name);
+        }
+
+        // Replay button interface trigger
         document.getElementById('replayVoiceBtn').addEventListener('click', () => {
             if (lastSpokenText) {
                 const replayUtterance = new SpeechSynthesisUtterance(lastSpokenText);
                 const container = document.getElementById('voiceStatusBox');
                 replayUtterance.rate = 0.95;
-                
                 replayUtterance.onstart = () => container.classList.add('speaking');
                 replayUtterance.onend = () => container.classList.remove('speaking');
                 window.speechSynthesis.speak(replayUtterance);
             }
         });
 
-        // Simulates clicking the final Save button based on your rules
+        // Triggered upon pressing the final 'Commit & Verify Player' form button
         function handleFinalSubmit() {
-            const name = document.getElementById('displayPlayerName').textContent;
-            const hasAgeCheat = document.getElementById('ageCheatCheck').checked;
+            const name = document.getElementById('playerNameInput').value || "New Player";
+            const ageCheatChecked = document.getElementById('ageCheatCheck').checked;
 
-            if (hasAgeCheat) {
+            if (ageCheatChecked) {
                 announceScreeningStatus('flagged', name);
             } else {
                 announceScreeningStatus('verified', name);
+                alert("Database Update: Entry saved into registration registry ledger.");
             }
+        }
+
+        // Triggered upon clicking the grey 'Hold Entry' button
+        function handleHold() {
+            const name = document.getElementById('playerNameInput').value || "New Player";
+            announceScreeningStatus('hold', name);
         }
     </script>
 </body>
