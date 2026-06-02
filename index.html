@@ -334,6 +334,14 @@
                 </div>
             </div>
             <div class="form-actions-row">
+                <!-- Form Action Footer -->
+<div class="form-actions-row">
+    <!-- ADD THIS BACK BUTTON LINE HERE -->
+    <button type="button" class="btn-action btn-action-back" onclick="goBackToPreviousPage()">⬅️ Back</button>
+    
+    <button type="button" class="btn-action btn-action-cancel" onclick="alert('Profile processing suspended.')">Hold Profile</button>
+    <button type="button" class="btn-action btn-action-approve" onclick="handleFinalSubmit()">Commit to Registry</button>
+</div>
                 <button type="button" class="btn-action btn-action-cancel" onclick="alert('Profile processing suspended.')">Hold Profile</button>
                 <button type="button" class="btn-action btn-action-approve" onclick="handleFinalSubmit()">Commit to Registry</button>
             </div>
