@@ -238,26 +238,15 @@
             color: #475569;
         }
 
-        /* Visual Alert State Modifiers */
-        .panel-verified {
-            border-color: #10b981;
-            background: #f0fdf4;
-        }
+        .panel-verified { border-color: #10b981; background: #f0fdf4; }
         .panel-verified .status-badge { background: #d1fae5; color: #065f46; border-color: #10b981; }
         .panel-verified .status-msg-box { background: #ffffff; border-color: #10b981; color: #065f46; }
 
-        .panel-flagged {
-            border-color: #ef4444;
-            background: #fef2f2;
-            animation: panelGlow 1.5s infinite;
-        }
+        .panel-flagged { border-color: #ef4444; background: #fef2f2; animation: panelGlow 1.5s infinite; }
         .panel-flagged .status-badge { background: #fee2e2; color: #991b1b; border-color: #ef4444; }
         .panel-flagged .status-msg-box { background: #ffffff; border-color: #ef4444; color: #991b1b; }
 
-        .panel-hold {
-            border-color: #f59e0b;
-            background: #fffbeb;
-        }
+        .panel-hold { border-color: #f59e0b; background: #fffbeb; }
         .panel-hold .status-badge { background: #fef3c7; color: #92400e; border-color: #f59e0b; }
         .panel-hold .status-msg-box { background: #ffffff; border-color: #f59e0b; color: #92400e; }
 
@@ -266,6 +255,58 @@
             70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
+
+        /* ========================================== */
+        /* NEW: PLAYER REGISTRATION LEDGER TABLE      */
+        /* ========================================== */
+        .ledger-container {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-top: 25px;
+            box-sizing: border-box;
+        }
+
+        .ledger-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        .ledger-table th {
+            background-color: #f8fafc;
+            color: #64748b;
+            padding: 12px;
+            border-bottom: 2px solid #e2e8f0;
+            font-weight: 600;
+        }
+
+        .ledger-table td {
+            padding: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+        }
+
+        .ledger-table tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* Table Status Badges */
+        .badge-table {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .badge-table-verified { background: #d1fae5; color: #065f46; }
+        .badge-table-flagged { background: #fee2e2; color: #991b1b; }
+        .badge-table-hold { background: #fef3c7; color: #92400e; }
+
     </style>
 </head>
 <body>
@@ -340,18 +381,45 @@
                         System standing by. Complete verification metrics or commit entry to determine ledger status.
                     </div>
                 </div>
+
                 <div class="form-actions-row">
                     <button type="button" class="btn-action btn-action-back" onclick="goBackToPreviousPage()">⬅️ Back</button>
                     <button type="button" class="btn-action btn-action-cancel" onclick="handleHold()">Hold Entry</button>
                     <button type="submit" class="btn-action btn-action-approve">Commit & Verify Player</button>
                 </div>
 
-            </div>
+                <div class="ledger-container">
+                    <h3 style="margin: 0; color: #1e293b;">District & Regional Registration Ledger</h3>
+                    <p style="font-size: 0.8rem; color: #64748b; margin: 4px 0 15px 0;">Live verified entries logged during this session.</p>
+                    
+                    <table class="ledger-table">
+                        <thead>
+                            <tr>
+                                <th>Reg ID</th>
+                                <th>Player Name</th>
+                                <th>District</th>
+                                <th>Date of Birth</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ledgerTableBody">
+                            <tr>
+                                <td>#REG-1042</td>
+                                <td>John Mukasa</td>
+                                <td>Wakiso District</td>
+                                <td>2010-02-15</td>
+                                <td><span class="badge-table badge-table-verified">VERIFIED</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                </div>
         </div>
     </form>
 
     <script>
-        // Synchronize inputs dynamically to update the sidebar layout card
+        let registrationCounter = 5021; // Seed counter for generating dynamic application IDs
+
         function syncFormText() {
             const nameInput = document.getElementById('playerNameInput').value;
             const districtInput = document.getElementById('playerDistrictInput').value;
@@ -360,24 +428,17 @@
             document.getElementById('displayPlayerDistrict').textContent = "District: " + districtInput;
         }
 
-        // Initialize display context on page load
         syncFormText();
 
-        // Dashboard Back Button Router Function 
         function goBackToPreviousPage() {
             window.history.back();
         }
 
-        /**
-         * State Machine Updates
-         * Visually changes dashboard cards based on the evaluation result
-         */
         function updateVisualPanel(state, message) {
             const panel = document.getElementById('statusDisplayPanel');
             const badge = document.getElementById('panelBadge');
             const msgBox = document.getElementById('panelMsgBox');
 
-            // Reset dynamic modifier classes
             panel.classList.remove('panel-verified', 'panel-flagged', 'panel-hold');
 
             if (state === 'verified') {
@@ -395,22 +456,52 @@
             }
         }
 
-        // Triggered upon pressing 'Commit & Verify Player'
+        // Adds the current form details into the live Ledger HTML Table rows instantly
+        function addPlayerToTableLedger(name, district, dob, status) {
+            const tbody = document.getElementById('ledgerTableBody');
+            const newRow = document.createElement('tr');
+            
+            let statusBadgeHTML = '';
+            if(status === 'VERIFIED') statusBadgeHTML = `<span class="badge-table badge-table-verified">VERIFIED</span>`;
+            if(status === 'FLAGGED') statusBadgeHTML = `<span class="badge-table badge-table-flagged">FLAGGED</span>`;
+            if(status === 'HOLD') statusBadgeHTML = `<span class="badge-table badge-table-hold">HOLD</span>`;
+
+            registrationCounter++; // Generate new sequential ID
+
+            newRow.innerHTML = `
+                <td>#REG-${registrationCounter}</td>
+                <td><strong>${name}</strong></td>
+                <td>${district}</td>
+                <td>${dob}</td>
+                <td>${statusBadgeHTML}</td>
+            `;
+            
+            // Insert newest items directly at the top of the ledger table body
+            tbody.insertBefore(newRow, tbody.firstChild);
+        }
+
         function handleFinalSubmit() {
             const name = document.getElementById('playerNameInput').value || "Participant";
+            const district = document.getElementById('playerDistrictInput').value;
+            const dob = document.getElementById('playerDOB').value || "N/A";
             const ageCheatChecked = document.getElementById('ageCheatCheck').checked;
 
             if (ageCheatChecked) {
-                updateVisualPanel('flagged', `CRITICAL ACCUSATION: Registration for ${name} has been rejected due to age discrepancies or duplicate token indicators.`);
+                updateVisualPanel('flagged', `CRITICAL ACCUSATION: Registration for ${name} has been rejected due to age discrepancies.`);
+                addPlayerToTableLedger(name, district, dob, 'FLAGGED');
             } else {
-                updateVisualPanel('verified', `SUCCESS: Entry for ${name} cleared. Data compiled and logged into the secure tournament register.`);
+                updateVisualPanel('verified', `SUCCESS: Entry for ${name} cleared. Data compiled and logged.`);
+                addPlayerToTableLedger(name, district, dob, 'VERIFIED');
             }
         }
 
-        // Triggered upon pressing 'Hold Entry'
         function handleHold() {
             const name = document.getElementById('playerNameInput').value || "Participant";
-            updateVisualPanel('hold', `PENDING: Screening for ${name} suspended. Awaiting additional validation documentation.`);
+            const district = document.getElementById('playerDistrictInput').value;
+            const dob = document.getElementById('playerDOB').value || "N/A";
+            
+            updateVisualPanel('hold', `PENDING: Screening for ${name} suspended.`);
+            addPlayerToTableLedger(name, district, dob, 'HOLD');
         }
     </script>
 </body>
