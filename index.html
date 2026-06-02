@@ -232,4 +232,342 @@
             min-height: 45px;
             display: flex;
             align-items: center;
-            font-weight: 5
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: #475569;
+        }
+
+        .panel-verified { border-color: #10b981; background: #f0fdf4; }
+        .panel-verified .status-badge { background: #d1fae5; color: #065f46; border-color: #10b981; }
+        .panel-verified .status-msg-box { background: #ffffff; border-color: #10b981; color: #065f46; }
+
+        .panel-flagged { border-color: #ef4444; background: #fef2f2; animation: panelGlow 1.5s infinite; }
+        .panel-flagged .status-badge { background: #fee2e2; color: #991b1b; border-color: #ef4444; }
+        .panel-flagged .status-msg-box { background: #ffffff; border-color: #ef4444; color: #991b1b; }
+
+        .panel-hold { border-color: #f59e0b; background: #fffbeb; }
+        .panel-hold .status-badge { background: #fef3c7; color: #92400e; border-color: #f59e0b; }
+        .panel-hold .status-msg-box { background: #ffffff; border-color: #f59e0b; color: #92400e; }
+
+        @keyframes panelGlow {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); }
+            70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        /* ========================================== */
+        /* TOURNAMENT LEDGER REGISTER GRID SECTION   */
+        /* ========================================== */
+        .ledger-container {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-top: 25px;
+            box-sizing: border-box;
+        }
+
+        .ledger-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 10px;
+        }
+
+        .ledger-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        .ledger-table th {
+            background-color: #f8fafc;
+            color: #64748b;
+            padding: 12px;
+            border-bottom: 2px solid #e2e8f0;
+            font-weight: 600;
+        }
+
+        .ledger-table td {
+            padding: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+        }
+
+        .ledger-table tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .badge-table {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .badge-table-verified { background: #d1fae5; color: #065f46; }
+        .badge-table-flagged { background: #fee2e2; color: #991b1b; }
+        .badge-table-hold { background: #fef3c7; color: #92400e; }
+
+        .btn-clear {
+            background: #fff1f2;
+            color: #b91c1c;
+            border: 1px solid #fecdd3;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-clear:hover { background: #ffe4e6; }
+
+    </style>
+</head>
+<body>
+
+    <form id="playerScreeningForm" onsubmit="event.preventDefault(); handleFinalSubmit();">
+        
+        <div class="screening-dashboard-container">
+
+            <div class="dashboard-sidebar">
+                <div class="profile-avatar" id="avatarBox">👤</div>
+                <h2 id="displayPlayerName">New Participant</h2>
+                <span class="player-id-label" id="displayPlayerDistrict">District Registry Terminal</span>
+                
+                <p style="font-size: 0.8rem; margin-top: 30px; color: #94a3b8; border-top: 1px solid #f1f5f9; padding-top: 15px;">
+                    Tambuka Screening System v2.1
+                </p>
+            </div>
+
+            <div class="dashboard-main-content">
+                
+                <div class="verification-step-card">
+                    <h3>📋 1. Player Registration Ledger Details</h3>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="playerNameInput">Full Legal Name</label>
+                            <input type="text" id="playerNameInput" placeholder="Enter Full Name" value="Brian Ssenyondo" oninput="syncFormText()" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="playerDistrictInput">District / Region</label>
+                            <select id="playerDistrictInput" onchange="syncFormText()">
+                                <option value="Kampala Central">Kampala Central</option>
+                                <option value="Wakiso District">Wakiso District</option>
+                                <option value="Gulu City">Gulu City</option>
+                                <option value="Mbarara District">Mbarara District</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="playerDOB">Date of Birth (For Age Screening)</label>
+                            <input type="date" id="playerDOB" value="2009-04-12" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="playerPhotoFile">Upload Verification Photo</label>
+                            <input type="file" id="playerPhotoFile" accept="image/*">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="verification-step-card">
+                    <h3>🔍 2. Biometric Screening Verification Parameters</h3>
+                    
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="digitalIdCheck" checked> Government / School Digital ID Matches Data
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="biometricFaceCheck" checked> Biometric Face Match Verified (Tambuka Match Engine)
+                        </label>
+                        <label class="checkbox-label" style="color: #b91c1c; font-weight: 600;">
+                            <input type="checkbox" id="ageCheatCheck"> FLAG TARGET FOR AGE CHEATING / SUSPICION ALARM
+                        </label>
+                    </div>
+                </div>
+
+                <div class="status-display-container" id="statusDisplayPanel">
+                    <div class="status-display-header">
+                        <h3>📊 3. Screening Status Matrix</h3>
+                        <span class="status-badge" id="panelBadge">STANDBY</span>
+                    </div>
+                    
+                    <div class="status-msg-box" id="panelMsgBox">
+                        System standing by. Complete verification metrics or commit entry to determine ledger status.
+                    </div>
+                </div>
+
+                <div class="form-actions-row">
+                    <button type="button" class="btn-action btn-action-back" onclick="goBackToPreviousPage()">⬅️ Back</button>
+                    <button type="button" class="btn-action btn-action-cancel" onclick="handleHold()">Hold Entry</button>
+                    <button type="submit" class="btn-action btn-action-approve">Commit & Verify Player</button>
+                </div>
+
+                <div class="ledger-container">
+                    <div class="ledger-header-row">
+                        <div>
+                            <h3 style="margin: 0; color: #1e293b;">📋 District & Regional Registration Ledger</h3>
+                            <p style="font-size: 0.8rem; color: #64748b; margin: 4px 0 0 0;">Tournament register database saved permanently inside this device terminal.</p>
+                        </div>
+                        <button type="button" class="btn-clear" onclick="clearLedgerDatabase()">🗑️ Clear Database</button>
+                    </div>
+                    
+                    <table class="ledger-table">
+                        <thead>
+                            <tr>
+                                <th>Reg ID</th>
+                                <th>Player Name</th>
+                                <th>District</th>
+                                <th>Date of Birth</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ledgerTableBody">
+                            </tbody>
+                    </table>
+                </div>
+                </div>
+        </div>
+    </form>
+
+    <script>
+        let playersDatabase = [];
+
+        function syncFormText() {
+            const nameInput = document.getElementById('playerNameInput').value;
+            const districtInput = document.getElementById('playerDistrictInput').value;
+            
+            document.getElementById('displayPlayerName').textContent = nameInput ? nameInput : "New Participant";
+            document.getElementById('displayPlayerDistrict').textContent = "District: " + districtInput;
+        }
+
+        function goBackToPreviousPage() {
+            window.history.back();
+        }
+
+        // Pulls cached player rows immediately when opening your Netlify/CodePen live URL
+        window.onload = function() {
+            syncFormText();
+            if (localStorage.getItem('tambuka_tournament_register')) {
+                playersDatabase = JSON.parse(localStorage.getItem('tambuka_tournament_register'));
+                renderLedgerTable();
+            } else {
+                // Add a default template row so the register isn't blank on first boot
+                playersDatabase = [{
+                    id: "#REG-5021",
+                    name: "John Mukasa",
+                    district: "Wakiso District",
+                    dob: "2010-02-15",
+                    status: "VERIFIED"
+                }];
+                localStorage.setItem('tambuka_tournament_register', JSON.stringify(playersDatabase));
+                renderLedgerTable();
+            }
+        };
+
+        function updateVisualPanel(state, message) {
+            const panel = document.getElementById('statusDisplayPanel');
+            const badge = document.getElementById('panelBadge');
+            const msgBox = document.getElementById('panelMsgBox');
+
+            panel.classList.remove('panel-verified', 'panel-flagged', 'panel-hold');
+
+            if (state === 'verified') {
+                panel.classList.add('panel-verified');
+                badge.textContent = "VERIFIED";
+                msgBox.innerHTML = "✅ SUCCESS: " + message;
+            } else if (state === 'flagged') {
+                panel.classList.add('panel-flagged');
+                badge.textContent = "ALERT FLAGGED";
+                msgBox.innerHTML = "🚨 REJECTED: " + message;
+            } else if (state === 'hold') {
+                panel.classList.add('panel-hold');
+                badge.textContent = "ENTRY ON HOLD";
+                msgBox.innerHTML = "⏳ PENDING: " + message;
+            }
+        }
+
+        // Commit profile metadata to explicit device arrays 
+        function savePlayerRecord(name, district, dob, status) {
+            const regId = "#REG-" + (Math.floor(Math.random() * 8000) + 1000);
+            
+            const newPlayerObj = {
+                id: regId,
+                name: name,
+                district: district,
+                dob: dob,
+                status: status
+            };
+
+            playersDatabase.unshift(newPlayerObj);
+            localStorage.setItem('tambuka_tournament_register', JSON.stringify(playersDatabase));
+            renderLedgerTable();
+        }
+
+        // Renders rows out into the Tournament Register section view
+        function renderLedgerTable() {
+            const tbody = document.getElementById('ledgerTableBody');
+            tbody.innerHTML = ""; 
+
+            if (playersDatabase.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:20px;">No registered records found in database cache.</td></tr>`;
+                return;
+            }
+
+            playersDatabase.forEach(player => {
+                const row = document.createElement('tr');
+                
+                let badgeHTML = '';
+                if(player.status === 'VERIFIED') badgeHTML = `<span class="badge-table badge-table-verified">VERIFIED</span>`;
+                if(player.status === 'FLAGGED') badgeHTML = `<span class="badge-table badge-table-flagged">FLAGGED</span>`;
+                if(player.status === 'HOLD') badgeHTML = `<span class="badge-table badge-table-hold">HOLD</span>`;
+
+                row.innerHTML = `
+                    <td>${player.id}</td>
+                    <td><strong>${player.name}</strong></td>
+                    <td>${player.district}</td>
+                    <td>${player.dob}</td>
+                    <td>${badgeHTML}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function clearLedgerDatabase() {
+            if(confirm("Erase all records stored inside the Tournament Register?")) {
+                playersDatabase = [];
+                localStorage.removeItem('tambuka_tournament_register');
+                renderLedgerTable();
+                updateVisualPanel('hold', "Terminal cache database cleared.");
+            }
+        }
+
+        function handleFinalSubmit() {
+            const name = document.getElementById('playerNameInput').value || "Participant";
+            const district = document.getElementById('playerDistrictInput').value;
+            const dob = document.getElementById('playerDOB').value || "N/A";
+            const ageCheatChecked = document.getElementById('ageCheatCheck').checked;
+
+            if (ageCheatChecked) {
+                updateVisualPanel('flagged', `Registration for ${name} rejected due to profile mismatch.`);
+                savePlayerRecord(name, district, dob, 'FLAGGED');
+            } else {
+                updateVisualPanel('verified', `Entry for ${name} cleared. Saved successfully to tournament database register.`);
+                savePlayerRecord(name, district, dob, 'VERIFIED');
+            }
+        }
+
+        function handleHold() {
+            const name = document.getElementById('playerNameInput').value || "Participant";
+            const district = document.getElementById('playerDistrictInput').value;
+            const dob = document.getElementById('playerDOB').value || "N/A";
+            
+            updateVisualPanel('hold', `Screening for ${name} suspended and put on queue lookups.`);
+            savePlayerRecord(name, district, dob, 'HOLD');
+        }
+    </script>
+</body>
+</html>
