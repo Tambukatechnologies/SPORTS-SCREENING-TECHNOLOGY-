@@ -175,6 +175,14 @@ select {
   font-size: 1rem;
   background-color: white;
 }
+.btn-action-back {
+    background: #475569; /* Slate Gray */
+    color: #ffffff;
+    max-width: 150px; /* Keeps it tight and neat */
+}
+.btn-action-back:hover {
+    background: #334155;
+}
 
 select:focus {
   outline: none;
