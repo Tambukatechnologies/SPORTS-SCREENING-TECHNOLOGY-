@@ -203,6 +203,13 @@ window.runFaceMatchScan = function() {
           <p style="margin:2px 0; font-size:0.85rem;"><strong>Name:</strong> ${currentlyFoundPlayer.name} | <strong>ID:</strong> ${currentlyFoundPlayer.id}</p>
           <p style="margin:2px 0; font-size:0.85rem;"><strong>Status:</strong> ${currentlyFoundPlayer.status.toUpperCase()}</p>
         </div>
+        function goBackToPreviousPage() {
+    // Option A: If you just want to go back to the literal last page in history:
+    window.history.back();
+    
+    // Option B: Or if you want to force it to go to a specific file like your player list:
+    // window.location.href = "players_list.html"; 
+}
       </div>
     `;
   }, 1500);
